@@ -1,9 +1,37 @@
 const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
+  //Sending a verification message
+  async sendVerificationEmail(email, verificationToken) {
+    // Create a Nodemailer transporter using your email service configuration
+    const transporter = nodemailer.createTransport({
+      // Configure the transporter options for your email service
+      // For example, using SMTP:
+      host: "smtp.example.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: "your-email@example.com",
+        pass: "your-email-password",
+      },
+    });
+
+    // Create the email message
+    const message = {
+      from: "your-email@example.com",
+      to: email,
+      subject: "Account Verification",
+      text: `Please click on the following link to set your password: https://your-app.com/set-password?token=${verificationToken}`,
+    };
+
+    // Send the email
+    await transporter.sendMail(message);
+  },
+
+  //end of sending a verifiaction
+
   //logouy user
   async logout(req, res, next) {
     try {
@@ -18,8 +46,8 @@ module.exports = {
         .send({ message: "Failed to logout user", error: error.message });
     }
   },
-  // verification
 
+  //registrng user
   async register(req, res, next) {
     try {
       const email = req.body.email;
@@ -34,102 +62,21 @@ module.exports = {
         // Email already exists
         return res.status(400).send({ error: "User already exists" });
       }
-
-      // Generate verification token
-      const verificationToken = uuidv4();
-
+      // Generate a verification token
+      const verificationToken = generateVerificationToken();
       // Store user details and verification token in the database
       const insertUserQuery =
-        "INSERT INTO users (Company, UserType, Username, Email, xapp-1-A05C4K4TUF3-5400653547795-d07078a07b20294f1c653264fa37327c581b2c8a557dd97916f9d6177f2ed0bc) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO users (Company, UserType, Username, Email, VerificationToken) VALUES (?, ?, ?, ?, ?)";
       await executeQuery(insertUserQuery, [
         company,
         userType,
         username,
         email,
-        xapp -
-          1 -
-          A05C4K4TUF3 -
-          5400653547795 -
-          d07078a07b20294f1c653264fa37327c581b2c8a557dd97916f9d6177f2ed0bc,
+        verificationToken,
       ]);
 
-      // Send verification message (via Slack or any other method)
-      await sendVerificationMessage(
-        email,
-        xapp -
-          1 -
-          A05C4K4TUF3 -
-          5400653547795 -
-          d07078a07b20294f1c653264fa37327c581b2c8a557dd97916f9d6177f2ed0bc
-      );
-
-      res.send({
-        message: "User registered successfully. Verification message sent.",
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        error: error.message,
-      });
-    }
-  },
-
-  //Start of verification message
-
-  async sendVerificationMessage(email, verificationToken) {
-    const slackMessage = `Please click the following link to set your password and complete the registration: <link-to-verification-page?token=${
-      xapp -
-      1 -
-      A05C4K4TUF3 -
-      5400653547795 -
-      d07078a07b20294f1c653264fa37327c581b2c8a557dd97916f9d6177f2ed0bc
-    }>`;
-
-    const slackApiUrl = "https://slack.com/api/chat.postMessage";
-    const slackApiToken = "YOUR_SLACK_API_TOKEN"; // Replace with your actual Slack API token
-
-    const payload = {
-      channel: email, // Replace with the appropriate channel or user ID
-      text: slackMessage,
-    };
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${slackApiToken}`,
-    };
-
-    try {
-      const response = await axios.post(slackApiUrl, payload, { headers });
-      console.log("Slack message sent:", response.data);
-    } catch (error) {
-      console.error("Failed to send Slack message:", error.message);
-    }
-  },
-
-  //end of verification message
-
-  async register(req, res, next) {
-    try {
-      const email = req.body.email;
-      const username = req.body.username;
-      const company = req.body.company;
-      const userType = req.body.userType;
-
-      // Check if email already exists
-      const checkEmailQuery = "SELECT * FROM users WHERE email = ?";
-      const existingUser = await executeQuery(checkEmailQuery, [email]);
-      if (existingUser.length > 0) {
-        // Email already exists
-        return res.status(400).send({ error: "User already exists" });
-      }
-
-      // Email doesn't exist, proceed with registration
-      const insertUserQuery =
-        "INSERT INTO users (Company, UserType, Username, Email) VALUES (?, ?, ?, ?)";
-      await executeQuery(insertUserQuery, [company, userType, username, email]);
-
-      // Send registration email
-      await this.sendRegistrationEmail(email, username);
+      // Send verification email
+      await sendVerificationEmail(email, verificationToken);
 
       res.send({
         message: "User registered successfully. Verification email sent.",
@@ -142,6 +89,7 @@ module.exports = {
     }
   },
 
+  //end of registrng user
   // Login controller
   async login(req, res, next) {
     try {
