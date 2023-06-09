@@ -1,0 +1,53 @@
+body {
+  width: 100% !important;
+}
+#link {
+  text-decoration: none;
+  font-weight: bold;
+  color: #5f2781;
+}
+#logo {
+  padding: 12px;
+  font-weight: bold;
+  color: #5f2781;
+}
+
+@media screen and (min-width: 400px) {
+  .order-container {
+    margin-top: 20%;
+  }
+}
+@media screen and (min-width: 800px) {
+  .order-container {
+    margin-top: 12%;
+  }
+}
+
+.bg_btn {
+  background-color: #5f2781 !important;
+}
+/* 
+.top {
+  margin-top: 10%;
+} */
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form {
+  width: 1000px;
+}
+.form-grid {
+  display: grid;
+  max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
