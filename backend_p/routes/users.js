@@ -1,5 +1,4 @@
 var express = require("express");
-
 const app = express.Router();
 const usersController = require("../controllers/users");
 const { activateUser, deactivateUser } = require("../controllers/users");
@@ -13,6 +12,8 @@ app.get("/allUsers", usersController.getAllUsers);
 
 // Regestering user
 app.post("/register", usersController.register);
+// set password
+app.post("/setpassword", usersController.setPassword);
 
 // Logging in
 app.post("/login", usersController.login);

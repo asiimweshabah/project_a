@@ -2,37 +2,44 @@ const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-module.exports = {
-  //Sending a verification message
-  async sendVerificationEmail(email, verificationToken) {
-    // Create a Nodemailer transporter using your email service configuration
-    const transporter = nodemailer.createTransport({
-      // Configure the transporter options for your email service
-      // For example, using SMTP:
-      host: "smtp.example.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "your-email@example.com",
-        pass: "your-email-password",
-      },
-    });
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "shaban.asiimwe.upti@gmail.com",
+    pass: "zordpsgqqgbsyaka",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
-    // Create the email message
-    const message = {
-      from: "your-email@example.com",
+async function sendVerificationMessage(email, verificationToken) {
+  try {
+    const mailOptions = {
+      from: "shaban.asiimwe.upti@gmail.com",
       to: email,
-      subject: "Account Verification",
-      text: `Please click on the following link to set your password: https://your-app.com/set-password?token=${verificationToken}`,
+      subject: "Set password to login",
+      html: `<body>
+        <h1>Click here to set your password</h1>
+        <a href="http://localhost:3000/setpassword?token=${verificationToken}">
+          <button>Go set Password</button>
+        </a>
+      </body>`,
     };
 
-    // Send the email
-    await transporter.sendMail(message);
-  },
+    // Save the verification token to the user's record in the database
+    const saveVerificationTokenQuery =
+      "UPDATE users SET VerificationToken = ? WHERE Email = ?";
+    await executeQuery(saveVerificationTokenQuery, [verificationToken, email]);
 
-  //end of sending a verifiaction
+    await transporter.sendMail(mailOptions);
+    console.log("Verification email sent successfully");
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+  }
+}
 
-  //logouy user
+module.exports = {
   async logout(req, res, next) {
     try {
       // Clear the user session or token here
@@ -47,7 +54,6 @@ module.exports = {
     }
   },
 
-  //registrng user
   async register(req, res, next) {
     try {
       const email = req.body.email;
@@ -62,42 +68,49 @@ module.exports = {
         // Email already exists
         return res.status(400).send({ error: "User already exists" });
       }
-      // Generate a verification token
-      const verificationToken = generateVerificationToken();
-      // Store user details and verification token in the database
-      const insertUserQuery =
-        "INSERT INTO users (Company, UserType, Username, Email, VerificationToken) VALUES (?, ?, ?, ?, ?)";
-      await executeQuery(insertUserQuery, [
-        company,
-        userType,
-        username,
-        email,
-        verificationToken,
-      ]);
 
-      // Send verification email
-      await sendVerificationEmail(email, verificationToken);
+      // Save the user with the verification token to the database
+      const insertUserQuery =
+        "INSERT INTO users (Company, UserType, Username, Email) VALUES (?, ?, ?, ?)";
+      await executeQuery(insertUserQuery, [company, userType, username, email]);
+
+      // Send registration email with the verification link
+      await sendVerificationMessage(email);
 
       res.send({
         message: "User registered successfully. Verification email sent.",
       });
     } catch (error) {
       console.error(error);
-      res.status(500).send({
-        error: error.message,
-      });
+      res.status(500).send({ error: error.message });
     }
   },
 
-  //end of registrng user
-  // Login controller
+  async setPassword(req, res, next) {
+    try {
+      const userId = req.body.id;
+      const password = req.body.password;
+      const hashedPassword = await bcrypt.hash(password, 6);
+
+      const updatePasswordQuery = "UPDATE users SET Password = ? WHERE id = ?";
+      await executeQuery(updatePasswordQuery, [hashedPassword, userId]);
+
+      res.send({ message: "Password set successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: error.message });
+    }
+  },
+
   async login(req, res, next) {
     try {
       const email = req.body.email;
       const password = req.body.password;
+
       // Check if user exists in the database
       const checkUserQuery = "SELECT * FROM users WHERE email = ?";
       const existingUser = await executeQuery(checkUserQuery, [email]);
+
       if (existingUser.length === 0) {
         // User does not exist, return an error message
         return res.status(401).send({ message: "User does not exist" });
@@ -105,7 +118,10 @@ module.exports = {
 
       const user = existingUser[0];
 
-      if (user.password === password) {
+      // Compare the provided password with the stored hashed password
+      const passwordMatch = await bcrypt.compare(password, user.Password);
+
+      if (passwordMatch) {
         // Password matches, user is logged in successfully
         res.send({ message: "User logged in successfully", user });
       } else {
@@ -114,14 +130,12 @@ module.exports = {
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send({
-        message: "Wrong password/username or user doesnot exist",
-        error: error.message,
-      });
+      res
+        .status(500)
+        .send({ message: "Failed to login", error: error.message });
     }
   },
 
-  // getAllUsers
   async getAllUsers(req, res, next) {
     try {
       const getUsersQuery = "SELECT * FROM users";
@@ -135,12 +149,10 @@ module.exports = {
     }
   },
 
-  // deleteUser
   async deleteUser(req, res, next) {
     try {
       const userId = req.params.id;
 
-      // Your logic to delete the user from the database
       const deleteQuery = `DELETE FROM users WHERE id = ${userId}`;
       await executeQuery(deleteQuery);
 
@@ -153,7 +165,6 @@ module.exports = {
     }
   },
 
-  // Activate a user
   async activateUser(req, res, next) {
     try {
       const userId = req.params.id;
@@ -162,7 +173,7 @@ module.exports = {
       SET status = 'active'
       WHERE id = ?
     `;
-      // await executeQuery(activateUserQuery, [userId]);
+      await executeQuery(activateUserQuery, [userId]);
       res.send({ message: "User activated successfully" });
     } catch (error) {
       console.error(error);
@@ -172,7 +183,6 @@ module.exports = {
     }
   },
 
-  // Deactivate a user
   async deactivateUser(req, res, next) {
     try {
       const userId = req.params.id;

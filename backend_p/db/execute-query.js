@@ -1,14 +1,15 @@
 const createConnection = require("./connect-to-database");
-module.exports = async function executeQuery(sql, parameters = null) {
+
+module.exports = async (sql, parameters = null, createDb = false) => {
+  let connection;
   try {
-    const connection = await createConnection();
+    connection = await createConnection(createDb);
     await connection.connect();
     let results;
     if (!parameters) {
       if (sql.includes("?")) {
         throw { message: `parameters are required` };
       }
-
       results = await connection.query(sql);
     } else {
       if (Array.isArray(parameters) && parameters.length) {
@@ -17,9 +18,12 @@ module.exports = async function executeQuery(sql, parameters = null) {
         throw { message: `parameters are required` };
       }
     }
-    await connection.end();
     return results[0];
   } catch (error) {
     console.log(error);
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
   }
 };

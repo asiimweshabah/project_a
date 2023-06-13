@@ -1,174 +1,5 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// export default function SignUp() {
-//   const [username, setUsername] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [registerStatus, setRegisterStatus] = useState("");
-//   const [company, setCompany] = useState("");
-//   const [userType, setUserType] = useState("");
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-//   const navigate = useNavigate();
-
-//   const signup = (e) => {
-//     e.preventDefault();
-
-//     let errorMessage = "";
-//     if (!username) {
-//       errorMessage = (
-//         <span className="text-danger border_R">"Username must be given."</span>
-//       );
-//     } else if (!email) {
-//       errorMessage = (
-//         <span className="text-danger border_R">
-//           "Email address must be given."
-//         </span>
-//       );
-//     } else if (!/\S+@\S+\.\S+/.test(email)) {
-//       errorMessage = (
-//         <span className="text-danger border_R">
-//           Invalid email address(Must contain @).
-//         </span>
-//       );
-//     } else if (!company) {
-//       errorMessage = (
-//         <span className="text-danger border_R">"Select your Company."</span>
-//       );
-//     } else if (!userType) {
-//       errorMessage = (
-//         <span className="text-danger border_R">"Select a your userType."</span>
-//       );
-//     }
-//     if (errorMessage) {
-//       setRegisterStatus(errorMessage);
-//     } else {
-//       setIsSubmitting(true);
-//       setRegisterStatus("");
-
-//       axios
-//         .post(`http://localhost:3006/users/register`, {
-//           username: username,
-//           email: email,
-//           company: company,
-//           userType: userType,
-//         })
-//         .then((response) => {
-//           if (response.data.error) {
-//             // Email already exists in the database
-//             setRegisterStatus(response.data.error);
-//           } else if (response.data.message) {
-//             setRegisterStatus(response.data.message);
-//             navigate("/admin");
-//           } else {
-//             setRegisterStatus("Account created successfully");
-//             navigate("/admin");
-//           }
-//         })
-//         .catch((error) => {
-//           console.error("User already exists:", error);
-//           setRegisterStatus("User already exists");
-//         })
-//         .finally(() => {
-//           setIsSubmitting(false);
-//         });
-//       // if (response.data.message) {
-//       //   setLoginStatus(response.data.message);
-//       // } else {
-//       //   // Registration successful, navigate to the desired component
-//       //   navigate("/dashboard"); // Replace "/dashboard" with the desired URL
-//       // }
-//     }
-//   };
-
-//   return (
-//     <div className="container d-flex align-items-center justify-content-center">
-//       <form className="form_container">
-//         <div className="my-3">
-//           <label htmlFor="username">
-//             Username
-//             <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-//               *
-//             </span>
-//           </label>
-//           <input
-//             required
-//             placeholder="username"
-//             className="form-control w-50"
-//             type="text"
-//             name={"username"}
-//             onChange={(e) => setUsername(e.target.value)}
-//           />
-//         </div>
-//         <div className="my-3">
-//           <label htmlFor="email">
-//             Email
-//             <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-//               *
-//             </span>
-//           </label>
-//           <input
-//             required
-//             placeholder="Email"
-//             className="form-control w-50"
-//             type={"email"}
-//             name={"email"}
-//             onChange={(e) => setEmail(e.target.value)}
-//           />
-//         </div>
-//         <div className="my-3">
-//           <label htmlFor="company">
-//             Company
-//             <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-//               *
-//             </span>
-//           </label>
-//           <select
-//             required
-//             className="form-control w-50"
-//             name="company"
-//             value={company}
-//             onChange={(e) => setCompany(e.target.value)}
-//           >
-//             <option value="">Select Company</option>
-//             <option value="Odysseytech">Odysseytech</option>
-//             <option value="Uganda Digital">Uganda Digital</option>
-//             <option value="UPTI">UPTI</option>
-//           </select>
-//         </div>
-//         <div className="my-3">
-//           <label htmlFor="userType">User Type:</label>
-//           <select
-//             className="form-control w-50"
-//             name="userType"
-//             value={userType}
-//             onChange={(e) => setUserType(e.target.value)}
-//           >
-//             <option value="">Select Usertype</option>
-//             <option value="normal">Normal User</option>
-//             <option value="admin">Admin</option>
-//             <option value="superadmin">Super Admin</option>
-//           </select>
-//         </div>
-
-//         <input
-//           onClick={signup}
-//           type="submit"
-//           value="Send Verification Code"
-//           name="signup"
-//           className="submit btn w-50 btn-danger mt-4 text-center"
-//           disabled={isSubmitting}
-//         />
-//         <h1 style={{ fontSize: "15px", marginTop: "20px" }}>
-//           {registerStatus}
-//         </h1>
-//       </form>
-//     </div>
-//   );
-// }
-
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [username, setUsername] = useState("");
@@ -177,7 +8,6 @@ export default function SignUp() {
   const [company, setCompany] = useState("");
   const [userType, setUserType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   const signup = (e) => {
     e.preventDefault();
@@ -226,27 +56,13 @@ export default function SignUp() {
           if (response.data.error) {
             // Email already exists in the database
             setRegisterStatus(response.data.error);
-          } else if (response.data.message) {
-            setRegisterStatus(response.data.message);
-            navigate("/confirm-password", {
-              state: {
-                email: email,
-                userType: userType,
-              },
-            });
           } else {
             setRegisterStatus("Account created successfully");
-            navigate("/confirm-password", {
-              state: {
-                email: email,
-                userType: userType,
-              },
-            });
           }
         })
         .catch((error) => {
           // console.error("Failed to register user:", error);
-          setRegisterStatus("Failed to send verification register user");
+          setRegisterStatus("User already exists");
         })
         .finally(() => {
           setIsSubmitting(false);
@@ -256,7 +72,7 @@ export default function SignUp() {
   return (
     <div className="container form_container d-flex align-items-center justify-content-center w-100">
       <div className="form-grid w-100">
-        <form className="form">
+        <form className="form" action="">
           <div className="my-3">
             <label htmlFor="username">
               Username

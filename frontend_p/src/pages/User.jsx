@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function User() {
   const [orders, setOrders] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedQuantities, setSelectedQuantities] = useState({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -109,6 +107,7 @@ export default function User() {
           <div className="my-3 justify-content-between d-flex">
             <div>
               <button
+                type="submit"
                 onClick={placeOrder}
                 className="bg_btn btn btn-success"
                 disabled={selectedProducts.length === 0}

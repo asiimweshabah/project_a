@@ -2,46 +2,26 @@ const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt");
 
 module.exports = {
-  // Create order controller for admin
+  // Create new product by an admin
   async create(req, res, next) {
     try {
-      const product = req.body.product;
-      const price = req.body.price;
-      const quantity = req.body.quantity;
-      const amount = req.body.amount;
-      const insertOrderQuery = `
-        INSERT INTO orders (Product, Price, Quantity, Amount)
-        VALUES (?, ?, ?, ?)
-      `;
+      const { product, price, quantity, amount } = req.body;
+
+      // Validate input data
+      if (!product || !price || !quantity || !amount) {
+        return res.status(400).send({ message: "Invalid order data" });
+      }
+
+      const insertOrderQuery =
+        "INSERT INTO orders (Product, Price, Quantity, Amount) VALUES (?, ?, ?, ?)";
 
       await executeQuery(insertOrderQuery, [product, price, quantity, amount]);
 
       res.send({ message: "Order placed successfully" });
-      console.log("Item inserted successfully:");
+      console.log("Order inserted successfully");
     } catch (error) {
-      console.error("Error inserting item:", error);
-    }
-  },
-
-  //create order for user
-
-  async create(req, res, next) {
-    try {
-      const product = req.body.product;
-      const price = req.body.price;
-      const quantity = req.body.quantity;
-
-      const insertOrderQuery = `
-        INSERT INTO orders (Product, Price, Quantity)
-        VALUES (?, ?, ?)
-      `;
-
-      await executeQuery(insertOrderQuery, [product, price, quantity]);
-
-      res.send({ message: "Order placed successfully" });
-      console.log("Item inserted successfully:");
-    } catch (error) {
-      console.error("Error inserting item:", error);
+      console.error("Error inserting order:", error);
+      res.status(500).send({ message: "Failed to insert order" });
     }
   },
 
@@ -78,29 +58,29 @@ module.exports = {
   },
 
   // edit a product
-  async editOrder(req, res, next) {
-    try {
-      const orderId = req.params.id;
-      const { product, price, quantity, amount } = req.body;
-      // Your logic to update the order in the database
-      const updateQuery = `
-      UPDATE orders
-      SET Product = ?, Price = ?, Quantity = ?, Amount = ?
-      WHERE id = ?
-    `;
-      await executeQuery(updateQuery, [
-        product,
-        price,
-        quantity,
-        amount,
-        orderId,
-      ]);
-      res.send({ message: "Order updated successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: "Failed to update order", error: error.message });
-    }
-  },
+  // async editOrder(req, res, next) {
+  //   try {
+  //     const orderId = req.params.id;
+  //     const { product, price, quantity, amount } = req.body;
+  //     // Your logic to update the order in the database
+  //     const updateQuery = `
+  //     UPDATE orders
+  //     SET Product = ?, Price = ?, Quantity = ?, Amount = ?
+  //     WHERE id = ?
+  //   `;
+  //     await executeQuery(updateQuery, [
+  //       product,
+  //       price,
+  //       quantity,
+  //       amount,
+  //       orderId,
+  //     ]);
+  //     res.send({ message: "Order updated successfully" });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res
+  //       .status(500)
+  //       .send({ message: "Failed to update order", error: error.message });
+  //   }
+  // },
 };

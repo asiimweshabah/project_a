@@ -40,7 +40,7 @@ const SideMenu = () => {
                 <div className="my-5">
                   <li className="navbar-item">
                     <Link
-                      to="/addproducts"
+                      to="/products"
                       className="Link  d-flex align-items-center"
                     >
                       <AiOutlineHome
@@ -52,7 +52,7 @@ const SideMenu = () => {
                   </li>
                   <li className="navbar-item">
                     <Link
-                      to="/users"
+                      to="/orders"
                       className="Link d-flex align-items-center"
                     >
                       <AiOutlineHome

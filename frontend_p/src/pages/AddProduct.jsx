@@ -43,7 +43,7 @@ export default function AddProduct() {
         amount,
       });
       if (response) {
-        navigate("/order");
+        navigate("/addproducts");
       }
     } catch (error) {
       console.error(error);
@@ -78,10 +78,29 @@ export default function AddProduct() {
                 name="price"
               />
             </div>
-
+            <div className="col-12 m-2">
+              <label>Quantity</label>
+              <input
+                value={formData.quantity}
+                onChange={handleInputChange}
+                className="form-control"
+                type="text"
+                name="quantity"
+              />
+            </div>
+            <div className="col-12 m-2">
+              <label>Amount</label>
+              <input
+                value={formData.amount}
+                onChange={handleInputChange}
+                className="form-control"
+                type="text"
+                name="amount"
+              />
+            </div>
             <div className="col-12 d-flex">
               <div className="d-flex flex-row m-2  w-100 justify-content-between">
-                <Link to="/order">
+                <Link to="/addproducts">
                   <button className="btn btn-secondary">Cancel</button>
                 </Link>
                 <button type="submit" className="btn btn-primary">

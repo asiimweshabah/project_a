@@ -3,13 +3,10 @@ const app = express.Router();
 const ordersController = require("../controllers/Order");
 //activate user
 
-// const client = require("../db/connect_to_db");
-
 /* GET users listing. */
 app.get("/", ordersController.getAllOrders);
 
-// adding a product
-
+// adding product by admin
 app.post("/create", ordersController.create);
 // ordering
 
@@ -17,6 +14,6 @@ app.post("/create", ordersController.create);
 app.delete("/deleteProduct/:id", ordersController.deleteProduct);
 
 // editorde
-app.patch("/editOrder/:id", ordersController.editOrder);
+// app.patch("/editOrder/:id", ordersController.editOrder);
 
 module.exports = app;
