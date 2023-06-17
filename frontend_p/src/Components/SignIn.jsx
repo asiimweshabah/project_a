@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("normal");
   const [loginStatus, setLoginStatus] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
   const login = async (e) => {
     e.preventDefault();
-
     let errorMessage = "";
     if (!email) {
       errorMessage = (
@@ -32,17 +34,17 @@ export default function Signin() {
         const response = await axios.post(`http://localhost:3006/users/login`, {
           email: email,
           password: password,
-          userType: userType,
+          // userType: userType,
         });
 
         if (response.data.message === "User does not exist") {
-          // User doesn't exist, show a message with an option to register
           setLoginStatus("User does not exist. Would you like to register?");
-        } else if (response.data.message) {
-          setLoginStatus(response.data.message);
+        } else if (response.data.message && response.data.token) {
+          localStorage.setItem("token", response.data.token);
+          setUserEmail(response.data.email);
+          navigate("/orders");
         } else {
-          // Successful login, navigate to the home page
-          navigate("/users");
+          setLoginStatus(response.data.error);
         }
       } catch (error) {
         console.error(error);
@@ -100,7 +102,7 @@ export default function Signin() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="my-3">
+          {/* <div className="my-3">
             <label htmlFor="userType">User Type:</label>
             <select
               className="form-control w-50"
@@ -113,7 +115,7 @@ export default function Signin() {
               <option value="admin">Admin</option>
               <option value="superadmin">Super Admin</option>
             </select>
-          </div>
+          </div> */}
           <div>
             <label htmlFor="password">
               Password

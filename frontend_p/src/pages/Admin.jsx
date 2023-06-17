@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+// import { useNavigate } from "react-router-dom";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -9,16 +10,21 @@ function Admin() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-
+  // const navigate = useNavigate();
   useEffect(() => {
     fetchUsers();
   }, [selectedCompany, selectedUserType]);
 
   async function fetchUsers() {
     try {
-      const response = await axios.get("http://localhost:3006/users/allUsers");
-      const allUsers = response.data;
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:3006/users/allUsers", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
 
+      const allUsers = response.data;
       let filteredUsers = allUsers;
 
       if (selectedCompany) {
@@ -42,9 +48,14 @@ function Admin() {
 
   async function deleteUser(Id) {
     try {
+      const token = localStorage.getItem("token");
       const result = window.confirm("Deleting user?");
       if (result) {
-        await axios.delete(`http://localhost:3006/users/deleteUser/${Id}`);
+        await axios.delete(`http://localhost:3006/users/deleteUser/${Id}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
         await fetchUsers();
       }
     } catch (error) {
@@ -93,7 +104,6 @@ function Admin() {
               <option value="Odysseytech">Odysseytech</option>
               <option value="UPTI">UPTI</option>
               <option value="Uganda Digital">Uganda Digital</option>
-              {/* Add more options for different companies */}
             </select>
 
             <select
@@ -132,23 +142,6 @@ function Admin() {
                     >
                       Delete User
                     </button>
-                    {/* <span onClick={() => setActive(!active)}>
-                      {user.status === "active" ? (
-                        <button
-                          onClick={() => activateUser(user.Id)}
-                          className="btn btn-sm btn-secondary w-100"
-                        >
-                          Activate User
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => deactivateUser(user.Id)}
-                          className="btn bg_btn btn-sm text-white w-100"
-                        >
-                          Dectivate User
-                        </button>
-                      )}
-                    </span> */}
                     <span onClick={() => setActive(!active)}>
                       {user.status === "active" ? (
                         <button

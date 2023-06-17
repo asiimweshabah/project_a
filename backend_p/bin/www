@@ -9,6 +9,7 @@ const {
   createDatabase,
   createUsersTable,
   createOrdersTable,
+  createUsersOrder,
 
   // createOrderHistoryTable,
 } = require("../db/create-database");
@@ -41,7 +42,7 @@ server.on("listening", onListening);
     await createDatabase(process.env.database);
     await createUsersTable();
     await createOrdersTable();
-    // await createOrderHistoryTable();
+    await createUsersOrder();
   } catch (error) {
     console.error(error);
   }

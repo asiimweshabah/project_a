@@ -8,12 +8,10 @@ import Setpassword from "./Components/Setpassword";
 import Outlets from "./Outlets";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
-import Orders from "./pages/Orders";
+import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import OrderHistory from "./pages/OrderHistory";
-import User from "./pages/User";
-
-// import SideMenu from "./Menu/SideMenu";
+import PlaceOrder from "./pages/PlaceOrder";
 
 function App() {
   return (
@@ -28,9 +26,8 @@ function App() {
         <Route path="/register" element={<SignUp />} />
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/admin_users" element={<Admin />} />
-        <Route path="/orders" element={<User />} />
-        <Route path="/products" element={<Orders />} />
-        <Route path="/orderHistory" element={<OrderHistory />} />
+        <Route path="/orders" element={<PlaceOrder />} />
+        <Route path="/products" element={<Products />} />
         <Route path="/admin_orderhistory" element={<OrderHistory />} />
       </Routes>
     </div>

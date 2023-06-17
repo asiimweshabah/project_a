@@ -1,14 +1,13 @@
-// Setpassword.js
-
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Setpassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -26,8 +25,10 @@ const Setpassword = () => {
       return;
     }
 
+    console.log(searchParams);
     axios
       .post(`http://localhost:3006/users/setpassword`, {
+        email: `${searchParams.get("email")}`,
         password,
       })
       .then((response) => {

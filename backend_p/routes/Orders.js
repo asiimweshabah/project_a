@@ -1,19 +1,32 @@
-var express = require("express");
-const app = express.Router();
-const ordersController = require("../controllers/Order");
-//activate user
+// var express = require("express");
+// const app = express.Router();
+// const ordersController = require("../controllers/Order");
+// const userAuther = require("../middlewares/user-auth");
+// const checkAdmin = require("../middlewares/check-admin-previledge");
 
-/* GET users listing. */
-app.get("/", ordersController.getAllOrders);
+// app.get("/", [userAuther], ordersController.getAllOrders);
 
-// adding product by admin
-app.post("/create", ordersController.create);
-// ordering
+// // adding product by admin
+// app.post(
+//   "/createOrder",
+//   [userAuther, checkAdmin],
+//   ordersController.createOrder
+// );
 
-//delete an order
-app.delete("/deleteProduct/:id", ordersController.deleteProduct);
+// // app.post("/orders", [userAuther], ordersController.orders);
 
-// editorde
-// app.patch("/editOrder/:id", ordersController.editOrder);
+// //placing an order
 
-module.exports = app;
+// // app.post("/placeOrder", ordersController.placeOrder);
+
+// //delete an order
+// app.delete(
+//   "/deleteProduct/:id",
+//   [userAuther, checkAdmin],
+//   ordersController.deleteProduct
+// );
+
+// // editorde
+// // app.patch("/editOrder/:id", ordersController.editOrder);
+
+// module.exports = app;

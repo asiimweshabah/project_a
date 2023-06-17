@@ -1,6 +1,8 @@
 const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+require("crypto").randomBytes(64).toString("hex");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -13,24 +15,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendVerificationMessage(email, verificationToken) {
+async function sendVerificationMessage(email) {
   try {
     const mailOptions = {
       from: "shaban.asiimwe.upti@gmail.com",
       to: email,
       subject: "Set password to login",
       html: `<body>
-        <h1>Click here to set your password</h1>
-        <a href="http://localhost:3000/setpassword?token=${verificationToken}">
-          <button>Go set Password</button>
+        <h1>Create an account</h1>
+        <a href="http://localhost:3000/setpassword?email=${email}">
+          <button className="btn btn-primary">Create</button>
         </a>
       </body>`,
     };
-
-    // Save the verification token to the user's record in the database
-    const saveVerificationTokenQuery =
-      "UPDATE users SET VerificationToken = ? WHERE Email = ?";
-    await executeQuery(saveVerificationTokenQuery, [verificationToken, email]);
 
     await transporter.sendMail(mailOptions);
     console.log("Verification email sent successfully");
@@ -39,11 +36,15 @@ async function sendVerificationMessage(email, verificationToken) {
   }
 }
 
+function generateAccessToken(user) {
+  return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "36000s" });
+}
+
 module.exports = {
+  //logout user
   async logout(req, res, next) {
     try {
-      // Clear the user session or token here
-      // Example: req.session.user = null;
+      req.session.destroy(); // Clear the session
 
       res.send({ message: "User logged out successfully" });
     } catch (error) {
@@ -73,11 +74,9 @@ module.exports = {
       const insertUserQuery =
         "INSERT INTO users (Company, UserType, Username, Email) VALUES (?, ?, ?, ?)";
       await executeQuery(insertUserQuery, [company, userType, username, email]);
-
-      // Send registration email with the verification link
       await sendVerificationMessage(email);
 
-      res.send({
+      return res.send({
         message: "User registered successfully. Verification email sent.",
       });
     } catch (error) {
@@ -88,12 +87,13 @@ module.exports = {
 
   async setPassword(req, res, next) {
     try {
-      const userId = req.body.id;
+      const email = req.body.email;
       const password = req.body.password;
       const hashedPassword = await bcrypt.hash(password, 6);
-
-      const updatePasswordQuery = "UPDATE users SET Password = ? WHERE id = ?";
-      await executeQuery(updatePasswordQuery, [hashedPassword, userId]);
+      console.log("email", email);
+      const updatePasswordQuery =
+        "UPDATE users SET PasswordHash = ? WHERE email = ?";
+      await executeQuery(updatePasswordQuery, [hashedPassword, email]);
 
       res.send({ message: "Password set successfully" });
     } catch (error) {
@@ -104,35 +104,33 @@ module.exports = {
 
   async login(req, res, next) {
     try {
-      const email = req.body.email;
-      const password = req.body.password;
-
-      // Check if user exists in the database
+      const { email, password } = req.body;
+      // Check if the user exists in the database
       const checkUserQuery = "SELECT * FROM users WHERE email = ?";
-      const existingUser = await executeQuery(checkUserQuery, [email]);
-
-      if (existingUser.length === 0) {
-        // User does not exist, return an error message
-        return res.status(401).send({ message: "User does not exist" });
+      const user = await executeQuery(checkUserQuery, [email]);
+      if (user.length === 0) {
+        return res.status(401).send({ error: "Invalid username or password" });
       }
 
-      const user = existingUser[0];
-
-      // Compare the provided password with the stored hashed password
-      const passwordMatch = await bcrypt.compare(password, user.Password);
-
-      if (passwordMatch) {
-        // Password matches, user is logged in successfully
-        res.send({ message: "User logged in successfully", user });
-      } else {
-        // Invalid password
-        res.status(401).send({ message: "Invalid password" });
+      const isValidPassword = await bcrypt.compare(
+        password,
+        user[0].PasswordHash
+      );
+      if (!isValidPassword) {
+        return res.status(401).send({ error: "Invalid username or password" });
       }
+
+      // Generate the access token with the user's email
+      const token = generateAccessToken(user[0]);
+
+      return res.status(200).send({
+        token,
+        email: user[0].email,
+        message: "User logged in successfully",
+      });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .send({ message: "Failed to login", error: error.message });
+      res.status(500).send({ error: error.message });
     }
   },
 
@@ -162,42 +160,6 @@ module.exports = {
       res
         .status(500)
         .send({ message: "Failed to delete user", error: error.message });
-    }
-  },
-
-  async activateUser(req, res, next) {
-    try {
-      const userId = req.params.id;
-      const activateUserQuery = `
-      UPDATE users
-      SET status = 'active'
-      WHERE id = ?
-    `;
-      await executeQuery(activateUserQuery, [userId]);
-      res.send({ message: "User activated successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: "Failed to activate user", error: error.message });
-    }
-  },
-
-  async deactivateUser(req, res, next) {
-    try {
-      const userId = req.params.id;
-      const deactivateUserQuery = `
-      UPDATE users
-      SET status = 'inactive'
-      WHERE id = ?
-    `;
-      await executeQuery(deactivateUserQuery, [userId]);
-      res.send({ message: "User deactivated successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: "Failed to deactivate user", error: error.message });
     }
   },
 };

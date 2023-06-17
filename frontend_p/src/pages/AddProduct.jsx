@@ -34,16 +34,25 @@ export default function AddProduct() {
 
   async function submit(event) {
     try {
+      const token = localStorage.getItem("token");
       event.preventDefault();
       const { product, price, quantity, amount } = formData;
-      const response = await axios.post("http://localhost:3006/orders/create", {
-        product,
-        price,
-        quantity,
-        amount,
-      });
+      const response = await axios.post(
+        "http://localhost:3006/products/createOrder",
+        {
+          product,
+          price,
+          quantity,
+          amount,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (response) {
-        navigate("/addproducts");
+        navigate("/products");
       }
     } catch (error) {
       console.error(error);

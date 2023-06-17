@@ -44,7 +44,7 @@ export default function User() {
         products: selectedProducts,
         quantities: selectedQuantities,
       };
-      await axios.post(`http://localhost:3006/orders/create/order`, orderData);
+      await axios.post(`http://localhost:3006/orders/placeOrder`, orderData);
       setSelectedProducts([]);
       setSelectedQuantities({});
       fetchData();

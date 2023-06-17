@@ -47,8 +47,30 @@ const createOrdersTable = async () => {
   }
 };
 
+// Create combined table for users and orders
+const createUsersOrderQuery = `
+CREATE TABLE IF NOT EXISTS userOrder (
+  Id INT AUTO_INCREMENT PRIMARY KEY,
+  UserId INT NOT NULL,
+  Product VARCHAR(255) NOT NULL,
+  Price DECIMAL(10, 2) NOT NULL,
+  Quantity INT NOT NULL,
+  Amount DECIMAL(10, 2) NOT NULL,
+  FOREIGN KEY (UserId) REFERENCES users(Id)
+)`;
+
+const createUsersOrder = async () => {
+  try {
+    const results = await executeQuery(createUsersOrderQuery);
+    // console.log("Combined table created successfully", results);
+  } catch (error) {
+    console.error("Error creating combined table:", error);
+  }
+};
+
 module.exports = {
   createDatabase,
   createUsersTable,
   createOrdersTable,
+  createUsersOrder,
 };
