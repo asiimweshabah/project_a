@@ -10,6 +10,8 @@ function Admin() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [active, setActive] = useState(false);
+
   // const navigate = useNavigate();
   useEffect(() => {
     fetchUsers();
@@ -46,16 +48,19 @@ function Admin() {
     }
   }
 
-  async function deleteUser(Id) {
+  async function deleteUser(users_Id) {
     try {
       const token = localStorage.getItem("token");
       const result = window.confirm("Deleting user?");
       if (result) {
-        await axios.delete(`http://localhost:3006/users/deleteUser/${Id}`, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
+        await axios.delete(
+          `http://localhost:3006/users/deleteUser/${users_Id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
         await fetchUsers();
       }
     } catch (error) {
@@ -63,18 +68,36 @@ function Admin() {
     }
   }
 
-  async function activateUser(userId) {
+  async function activateUser(users_Id) {
     try {
-      await axios.put(`http://localhost:3006/users/activate/${userId}`);
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:3006/users/activate/${users_Id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       await fetchUsers();
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function deactivateUser(userId) {
+  async function deactivateUser(users_Id) {
     try {
-      await axios.put(`http://localhost:3006/users/deactivate/${userId}`);
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:3006/users/deactivate/${users_Id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       await fetchUsers();
     } catch (error) {
       console.error(error);
@@ -88,7 +111,6 @@ function Admin() {
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const [active, setActive] = useState(false);
 
   return (
     <div className="order-container">
@@ -121,42 +143,67 @@ function Admin() {
           <table className="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Names</th>
-                <th>Company</th>
-                <th>UserType</th>
-                <th>Email</th>
-                <th className="actions">Controls</th>
+                <th th="true" className="text-white">
+                  Names
+                </th>
+                <th th="true" className="text-white">
+                  Company
+                </th>
+                <th th="true" className="text-white">
+                  UserType
+                </th>
+                <th th="true" className="text-white">
+                  Email
+                </th>
+                <th th="true" className="text-white">
+                  Joining Date
+                </th>
+                <th th="true" className="actions text-white">
+                  Controls
+                </th>
               </tr>
             </thead>
             <tbody>
               {currentUsers.map((user) => (
-                <tr key={user.Id}>
+                <tr key={user.users_Id}>
                   <td>{user.Username}</td>
                   <td>{user.Company}</td>
                   <td>{user.UserType}</td>
                   <td>{user.Email}</td>
+                  <td>{user.dateOfJoining.split("T")[0]}</td>
                   <td className="w-100 d-flex justify-content-evenly">
                     <button
                       className="bg_btn btn-sm btn btn-success"
-                      onClick={() => deleteUser(user.Id)}
+                      onClick={() => deleteUser(user.users_Id)}
                     >
                       Delete User
                     </button>
-                    <span onClick={() => setActive(!active)}>
-                      {user.status === "active" ? (
-                        <button
-                          onClick={() => deactivateUser(user.Id)}
-                          className="btn btn-sm btn-secondary w-100"
-                        >
-                          Deactivate User
-                        </button>
+
+                    <span
+                      className="justify-content-start"
+                      onClick={() => {
+                        setActive(!active);
+                        // if (!active)
+                      }}
+                    >
+                      {active ? (
+                        <div className="justify-content-start">
+                          <button
+                            onClick={() => activateUser(user.users_Id)}
+                            className="btn-width btn bg_btn btn-sm text-white w-100"
+                          >
+                            Activate User
+                          </button>
+                        </div>
                       ) : (
-                        <button
-                          onClick={() => activateUser(user.Id)}
-                          className="btn bg_btn btn-sm text-white w-100"
-                        >
-                          Activate User
-                        </button>
+                        <div>
+                          <button
+                            onClick={() => deactivateUser(user.users_Id)}
+                            className="btn btn-sm btn-danger w-100"
+                          >
+                            Inactivate User
+                          </button>
+                        </div>
                       )}
                     </span>
                   </td>

@@ -12,7 +12,7 @@ export default function User() {
 
   async function fetchData() {
     try {
-      const response = await axios.get(`http://localhost:3006/orders`);
+      const response = await axios.get(`http://localhost:3006/products`);
       setOrders(response.data);
     } catch (error) {
       console.error(error);
@@ -44,7 +44,7 @@ export default function User() {
         products: selectedProducts,
         quantities: selectedQuantities,
       };
-      await axios.post(`http://localhost:3006/orders/placeOrder`, orderData);
+      await axios.post(`http://localhost:3006/products/placeOrder`, orderData);
       setSelectedProducts([]);
       setSelectedQuantities({});
       fetchData();
@@ -70,13 +70,13 @@ export default function User() {
             <tbody>
               {Array.isArray(orders) && orders.length > 0 ? (
                 orders.map((order) => (
-                  <tr key={order.Id}>
+                  <tr key={order.order_Id}>
                     <td className="w-25">
                       <input
                         type="checkbox"
-                        value={order.Id}
+                        value={order.order_Id}
                         onChange={(event) =>
-                          handleProductSelection(event, order.Id)
+                          handleProductSelection(event, order.order_Id)
                         }
                       />
                       {order.Product}
@@ -84,9 +84,9 @@ export default function User() {
                     <td className="w-25">
                       <select
                         className="form-control"
-                        value={selectedQuantities[order.Id] || ""}
+                        value={selectedQuantities[order.order_Id] || ""}
                         onChange={(event) =>
-                          handleQuantitySelection(event, order.Id)
+                          handleQuantitySelection(event, order.order_Id)
                         }
                       >
                         <option value="">Select quantity</option>

@@ -3,11 +3,6 @@ const app = express.Router();
 const usersController = require("../controllers/users");
 const userAuther = require("../middlewares/user-auth");
 const checkAdmin = require("../middlewares/check-admin-previledge");
-const { activateUser, deactivateUser } = require("../controllers/users");
-
-// const client = require("../db/connect_to_db");
-
-const { error } = require("console");
 
 /* GET users listing. */
 app.get("/allUsers", [userAuther, checkAdmin], usersController.getAllUsers);
@@ -33,7 +28,15 @@ app.post("/logout/:id", [userAuther], usersController.logout);
 // app.post("/logout/:id", usersController.logout);
 
 // Define routes
-// app.put("/activate/:id", [userAuther, checkAdmin], activateUser);
-// app.put("/deactivate/:id", [userAuther, checkAdmin], deactivateUser);
+app.put(
+  "/activate/:id",
+  [userAuther, checkAdmin],
+  usersController.activateUser
+);
+app.put(
+  "/deactivate/:id",
+  [userAuther, checkAdmin],
+  usersController.deactivateUser
+);
 
 module.exports = app;

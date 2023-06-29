@@ -10,6 +10,8 @@ export default function SignUp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signup = (e) => {
+    const token = localStorage.getItem("token");
+
     e.preventDefault();
 
     let errorMessage = "";
@@ -46,12 +48,20 @@ export default function SignUp() {
 
       // Send verification code to the user's email
       axios
-        .post(`http://localhost:3006/users/register`, {
-          username: username,
-          email: email,
-          company: company,
-          userType: userType,
-        })
+        .post(
+          `http://localhost:3006/users/register`,
+          {
+            username: username,
+            email: email,
+            company: company,
+            userType: userType,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        )
         .then((response) => {
           if (response.data.error) {
             // Email already exists in the database

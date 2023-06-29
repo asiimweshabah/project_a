@@ -1,56 +1,60 @@
 const executeQuery = require("../db/execute-query");
-const bcrypt = require("bcrypt");
+
 module.exports = {
-  async createOrder(req, res, next) {
+  async createProduct(req, res, next) {
     try {
       const { product, price, quantity, amount } = req.body;
 
       // Validate input data
       if (!product || !price || !quantity || !amount) {
-        return res.status(400).send({ message: "Invalid order data" });
+        return res.status(400).send({ message: "Invalid Product data" });
       }
+      const insertProductQuery =
+        "INSERT INTO products (Product, Price, Quantity, Amount) VALUES (?, ?, ?, ?)";
 
-      const insertOrderQuery =
-        "INSERT INTO orders (Product, Price, Quantity, Amount) VALUES (?, ?, ?, ?)";
+      await executeQuery(insertProductQuery, [
+        product,
+        price,
+        quantity,
+        amount,
+      ]);
 
-      await executeQuery(insertOrderQuery, [product, price, quantity, amount]);
-
-      res.send({ message: "Order placed successfully" });
-      console.log("Order inserted successfully");
+      res.send({ message: "Product placed successfully" });
+      console.log("Product inserted successfully");
     } catch (error) {
-      console.error("Error inserting order:", error);
-      res.status(500).send({ message: "Failed to insert order" });
+      console.error("Error inserting Product:", error);
+      res.status(500).send({ message: "Failed to insert Product" });
     }
   },
 
-  async getAllOrders(req, res, next) {
+  async getAllProducts(req, res, next) {
     try {
-      const getOrdersQuery = "SELECT * FROM orders";
-      const orders = await executeQuery(getOrdersQuery);
-      res.send(orders);
+      const getProductsQuery = "SELECT * FROM products";
+      const Products = await executeQuery(getProductsQuery);
+      res.send(Products);
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Failed to fetch orders ", error: error.message });
+        .send({ message: "Failed to fetch Products ", error: error.message });
     }
   },
 
   // deleteProduct
   async deleteProduct(req, res, next) {
     try {
-      const orderId = req.params.id;
+      const productId = req.params.id;
 
-      // Your logic to delete the order from the database
-      const deleteQuery = `DELETE FROM orders WHERE id = ${orderId}`;
+      // Your logic to delete the Product from the database
+      const deleteQuery = `DELETE FROM products WHERE product_Id = ${productId}`;
       await executeQuery(deleteQuery);
 
-      res.send({ message: "order deleted successfully" });
+      res.send({ message: "Product deleted successfully" });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Failed to delete order", error: error.message });
+        .send({ message: "Failed to delete Product", error: error.message });
     }
   },
 };

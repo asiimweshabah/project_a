@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -34,15 +34,14 @@ export default function Signin() {
         const response = await axios.post(`http://localhost:3006/users/login`, {
           email: email,
           password: password,
-          // userType: userType,
         });
 
         if (response.data.message === "User does not exist") {
-          setLoginStatus("User does not exist. Would you like to register?");
+          setLoginStatus("User does not exist");
         } else if (response.data.message && response.data.token) {
           localStorage.setItem("token", response.data.token);
           setUserEmail(response.data.email);
-          navigate("/orders");
+          navigate("/products");
         } else {
           setLoginStatus(response.data.error);
         }
@@ -102,20 +101,7 @@ export default function Signin() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          {/* <div className="my-3">
-            <label htmlFor="userType">User Type:</label>
-            <select
-              className="form-control w-50"
-              name="userType"
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-            >
-              <option>Select user type</option>
-              <option value="normal">Normal User</option>
-              <option value="admin">Admin</option>
-              <option value="superadmin">Super Admin</option>
-            </select>
-          </div> */}
+
           <div>
             <label htmlFor="password">
               Password
@@ -150,6 +136,11 @@ export default function Signin() {
           >
             {loginStatus}
           </h1>
+          <span className="text-primary justify-content-end">
+            <Link style={{ textDecoration: "none" }} to="/resetPassword">
+              Forgot password?
+            </Link>
+          </span>
         </form>
 
         {/* User registration form */}

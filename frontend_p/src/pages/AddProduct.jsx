@@ -38,7 +38,7 @@ export default function AddProduct() {
       event.preventDefault();
       const { product, price, quantity, amount } = formData;
       const response = await axios.post(
-        "http://localhost:3006/products/createOrder",
+        "http://localhost:3006/products/createProduct",
         {
           product,
           price,

@@ -37,7 +37,7 @@ async function sendVerificationMessage(email) {
 }
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "36000s" });
+  return jwt.sign(user, process.env.TOKEN_SECRET /*, { expiresIn: "36000s" }*/);
 }
 
 module.exports = {
@@ -105,6 +105,7 @@ module.exports = {
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
+
       // Check if the user exists in the database
       const checkUserQuery = "SELECT * FROM users WHERE email = ?";
       const user = await executeQuery(checkUserQuery, [email]);
@@ -112,11 +113,13 @@ module.exports = {
         return res.status(401).send({ error: "Invalid username or password" });
       }
 
-      const isValidPassword = await bcrypt.compare(
-        password,
-        user[0].PasswordHash
-      );
-      if (!isValidPassword) {
+      // Get the hash of the password from the database
+      const hashedPassword = user[0].PasswordHash;
+      console.log(hashedPassword);
+
+      // Compare the password that the user entered to the hash of the password in the database
+      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+      if (!isPasswordValid) {
         return res.status(401).send({ error: "Invalid username or password" });
       }
 
@@ -151,7 +154,7 @@ module.exports = {
     try {
       const userId = req.params.id;
 
-      const deleteQuery = `DELETE FROM users WHERE id = ${userId}`;
+      const deleteQuery = `DELETE FROM users WHERE users_Id = ${userId}`;
       await executeQuery(deleteQuery);
 
       res.send({ message: "User deleted successfully" });
@@ -160,6 +163,37 @@ module.exports = {
       res
         .status(500)
         .send({ message: "Failed to delete user", error: error.message });
+    }
+  },
+  async activateUser(req, res, next) {
+    try {
+      const userId = req.params.id;
+
+      const activateQuery = `UPDATE users SET status = 'Active' WHERE users_Id = ${userId}`;
+      await executeQuery(activateQuery);
+
+      res.send({ message: "User activated successfully" });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Failed to activate user", error: error.message });
+    }
+  },
+
+  async deactivateUser(req, res, next) {
+    try {
+      const userId = req.params.id;
+
+      const deactivateQuery = `UPDATE users SET status = 'Inactive' WHERE users_Id = ${userId}`;
+      await executeQuery(deactivateQuery);
+
+      res.send({ message: "User deactivated successfully" });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Failed to deactivate user", error: error.message });
     }
   },
 };

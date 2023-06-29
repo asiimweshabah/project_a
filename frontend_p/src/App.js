@@ -10,8 +10,9 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
+import Newpassword from "./Components/Newpassword";
 import OrderHistory from "./pages/OrderHistory";
-import PlaceOrder from "./pages/PlaceOrder";
+import Recent from "./pages/Recent";
 
 function App() {
   return (
@@ -21,13 +22,15 @@ function App() {
           <Route path="/" exact element={<Home />} />
           {/* <Route path="/" exact element={<SideMenu />} /> */}
         </Route>
+
+        <Route path="/resetPassword" exact element={<Newpassword />} />
         <Route path="/setpassword" exact element={<Setpassword />} />
         <Route path="/login" exact element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/admin_users" element={<Admin />} />
-        <Route path="/orders" element={<PlaceOrder />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/recent" element={<Recent />} />
         <Route path="/admin_orderhistory" element={<OrderHistory />} />
       </Routes>
     </div>

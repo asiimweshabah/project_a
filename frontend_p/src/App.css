@@ -23,9 +23,11 @@ body {
   }
 }
 
-.bg_btn {
+.bg_btn,
+th {
   background-color: #5f2781 !important;
 }
+
 /* 
 .top {
   margin-top: 10%;

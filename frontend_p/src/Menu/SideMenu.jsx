@@ -3,52 +3,44 @@ import { Link } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import "./Sidenav.css";
-import { AiOutlineHome, AiOutlineOrderedList } from "react-icons/ai";
+import { AiOutlineOrderedList } from "react-icons/ai";
 import { MdAccountCircle } from "react-icons/md";
-import { RiFileHistoryFill } from "react-icons/ri";
+import {
+  RiFileHistoryFill,
+  RiLoginCircleFill,
+  RiLogoutCircleFill,
+} from "react-icons/ri";
 import { Modal } from "react-bootstrap";
 import { IconContext } from "react-icons";
 import { BsFillPeopleFill } from "react-icons/bs";
-import { RiLogoutCircleRFill } from "react-icons/ri";
-import axios from "axios";
 
 const SideMenu = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [showModal, setShowModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userType, setUserType] = useState("");
+  useEffect(() => {
+    const checkLoggedIn = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+      const email = localStorage.getItem("email");
+      setUserEmail(email || "");
+    };
+
+    checkLoggedIn();
+  }, []);
+
   const toggleModal = () => {
     setShowModal(!showModal);
   };
+
   const handleLogout = () => {
     localStorage.clear();
+    setIsLoggedIn(false);
     toggleModal();
   };
-
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3006/users/email`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        if (response.status === 200) {
-          const data = await response.json();
-          setUserEmail(data.email);
-        } else {
-          // Handle error response
-          // Example: Redirect to login page or display an error message
-        }
-      } catch (error) {
-        console.error(error);
-        // Handle fetch error
-      }
-    };
-    fetchUserEmail();
-  }, []);
 
   return (
     <div className="col-auto col-md-3 col-xl-2 nav-container nav-top px-sm-2 px-0 ">
@@ -78,18 +70,6 @@ const SideMenu = () => {
                       to="/products"
                       className="Link  d-flex align-items-center"
                     >
-                      <AiOutlineHome
-                        className="ico mx-2"
-                        style={{ fontSize: "25px" }}
-                      />
-                      Add Product
-                    </Link>
-                  </li>
-                  <li className="navbar-item">
-                    <Link
-                      to="/orders"
-                      className="Link d-flex align-items-center"
-                    >
                       <AiOutlineOrderedList
                         className="ico mx-2"
                         style={{ fontSize: "25px" }}
@@ -97,9 +77,10 @@ const SideMenu = () => {
                       My Order
                     </Link>
                   </li>
+
                   <li className="navbar-item">
                     <Link
-                      to="/orderHistory"
+                      to="/recent"
                       className="Link  d-flex align-items-center"
                     >
                       <AiOutlineOrderedList
@@ -150,16 +131,33 @@ const SideMenu = () => {
                     </Link>
                   </li>
                   <li className="navbar-item">
-                    <Link
-                      onClick={toggleModal}
-                      className="Link  d-flex align-items-center"
-                    >
-                      <RiLogoutCircleRFill
-                        className="ico mx-2"
-                        style={{ fontSize: " 25px" }}
-                      />
-                      Logout
-                    </Link>
+                    {isLoggedIn ? (
+                      <li className="navbar-item">
+                        <Link
+                          onClick={toggleModal}
+                          className="Link  d-flex align-items-center"
+                        >
+                          <RiLogoutCircleFill
+                            className="ico mx-2"
+                            style={{ fontSize: " 25px" }}
+                          />
+                          Logout
+                        </Link>
+                      </li>
+                    ) : (
+                      <li className="navbar-item">
+                        <Link
+                          to="/login"
+                          className="Link  d-flex align-items-center"
+                        >
+                          <RiLoginCircleFill
+                            className="ico mx-2"
+                            style={{ fontSize: " 25px" }}
+                          />
+                          Login
+                        </Link>
+                      </li>
+                    )}
                   </li>
                 </div>
               </ul>
@@ -174,7 +172,7 @@ const SideMenu = () => {
                   className="ico mx-2"
                   style={{ fontSize: "25px" }}
                 />
-                {userEmail}
+                {isLoggedIn && <p>{userEmail}</p>}
               </Link>
             </div>
           </div>
@@ -187,7 +185,7 @@ const SideMenu = () => {
                 <p>Are you sure you want to log out?</p>
               </Modal.Body>
               <Modal.Footer>
-                <button className="btn bg_btn" onClick={toggleModal}>
+                <button className="btn bg_btn text-white" onClick={toggleModal}>
                   Cancel
                 </button>
                 <button

@@ -5,24 +5,24 @@ const userAuther = require("../middlewares/user-auth");
 const checkAdmin = require("../middlewares/check-admin-previledge");
 
 /* GET users listing. */
-app.get("/", [userAuther], productsController.getAllOrders);
+app.get("/", [userAuther], productsController.getAllProducts);
 
 // adding product by admin
 app.post(
-  "/createOrder",
+  "/createProduct",
   [userAuther, checkAdmin],
-  productsController.createOrder
+  productsController.createProduct
 );
 
-// app.post("/userOrder", [userAuther], productsController.userOrder);
+// app.post("/userProduct", [userAuther], productsController.userProduct);
 
-// ordering
-//  app.post("/placeOrder", userOrderController.placeOrder);
+// Producting
+//  app.post("/placeProduct", userProductController.placeProduct);
 
-//delete an order
+//delete an Product
 app.delete(
   "/deleteProduct/:id",
-  [userAuther, checkAdmin],
+  // [userAuther, checkAdmin],
   productsController.deleteProduct
 );
 

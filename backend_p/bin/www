@@ -8,8 +8,8 @@ const app = require("../app");
 const {
   createDatabase,
   createUsersTable,
+  createProductsTable,
   createOrdersTable,
-  createUsersOrder,
 
   // createOrderHistoryTable,
 } = require("../db/create-database");
@@ -41,8 +41,8 @@ server.on("listening", onListening);
   try {
     await createDatabase(process.env.database);
     await createUsersTable();
+    await createProductsTable();
     await createOrdersTable();
-    await createUsersOrder();
   } catch (error) {
     console.error(error);
   }
