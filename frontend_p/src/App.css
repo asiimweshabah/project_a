@@ -40,6 +40,10 @@ th {
   height: 100vh;
 }
 
+.T-width {
+  width: 5%;
+}
+
 .form {
   width: 1000px;
 }

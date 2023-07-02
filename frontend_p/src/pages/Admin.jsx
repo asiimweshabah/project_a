@@ -10,12 +10,22 @@ function Admin() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [active, setActive] = useState(false);
+  // const [activeUsers, setActiveUsers] = useState([]);
+  const [userActivationStatus, setUserActivationStatus] = useState({});
 
-  // const navigate = useNavigate();
   useEffect(() => {
+    const storedActiveUsers = localStorage.getItem("activeUsers");
+    if (storedActiveUsers) {
+      const parsedActiveUsers = JSON.parse(storedActiveUsers);
+      const activationStatus = parsedActiveUsers.reduce((acc, userId) => {
+        acc[userId] = true; // Assuming active users are stored as an array of user IDs
+        return acc;
+      }, {});
+      setUserActivationStatus(activationStatus);
+    }
+
     fetchUsers();
-  }, [selectedCompany, selectedUserType]);
+  }, []);
 
   async function fetchUsers() {
     try {
@@ -41,7 +51,7 @@ function Admin() {
         );
       }
 
-      setUsers(allUsers);
+      setUsers(users);
       setFilteredUsers(filteredUsers);
     } catch (error) {
       console.error(error);
@@ -67,42 +77,51 @@ function Admin() {
       console.error(error);
     }
   }
-
-  async function activateUser(users_Id) {
+  const toggleUserActivation = async (users_Id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:3006/users/activate/${users_Id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const userIsActive = userActivationStatus[users_Id];
+
+      if (userIsActive) {
+        await axios.put(
+          `http://localhost:3006/users/deactivate/${users_Id}`,
+          {},
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+      } else {
+        await axios.put(
+          `http://localhost:3006/users/activate/${users_Id}`,
+          {},
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+      }
+
+      const updatedActivationStatus = {
+        ...userActivationStatus,
+        [users_Id]: !userIsActive,
+      };
+      setUserActivationStatus(updatedActivationStatus);
+
+      // Save the updated activeUsers array to local storage
+      const activeUsers = Object.entries(updatedActivationStatus)
+        .filter(([userId, isActive]) => isActive)
+        .map(([userId]) => userId);
+      localStorage.setItem("activeUsers", JSON.stringify(activeUsers));
+
+      // Fetch the updated user list
       await fetchUsers();
     } catch (error) {
       console.error(error);
     }
-  }
-
-  async function deactivateUser(users_Id) {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:3006/users/deactivate/${users_Id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      await fetchUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  };
 
   // Get the current users to display based on pagination
   const indexOfLastUser = currentPage * usersPerPage;
@@ -159,7 +178,7 @@ function Admin() {
                   Joining Date
                 </th>
                 <th th="true" className="actions text-white">
-                  Controls
+                  For Admins
                 </th>
               </tr>
             </thead>
@@ -178,30 +197,23 @@ function Admin() {
                     >
                       Delete User
                     </button>
-
-                    <span
-                      className="justify-content-start"
-                      onClick={() => {
-                        setActive(!active);
-                        // if (!active)
-                      }}
-                    >
-                      {active ? (
-                        <div className="justify-content-start">
+                    <span className="justify-content-start">
+                      {userActivationStatus[user.users_Id] ? (
+                        <div>
                           <button
-                            onClick={() => activateUser(user.users_Id)}
-                            className="btn-width btn bg_btn btn-sm text-white w-100"
+                            onClick={() => toggleUserActivation(user.users_Id)}
+                            className="btn btn-sm btn-danger w-100"
                           >
-                            Activate User
+                            Deactivate User
                           </button>
                         </div>
                       ) : (
                         <div>
                           <button
-                            onClick={() => deactivateUser(user.users_Id)}
-                            className="btn btn-sm btn-danger w-100"
+                            onClick={() => toggleUserActivation(user.users_Id)}
+                            className="btn-width btn bg_btn btn-sm text-white w-100"
                           >
-                            Inactivate User
+                            Activate User
                           </button>
                         </div>
                       )}

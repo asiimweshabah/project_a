@@ -20,7 +20,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Outlets />}>
           <Route path="/" exact element={<Home />} />
-          {/* <Route path="/" exact element={<SideMenu />} /> */}
         </Route>
 
         <Route path="/resetPassword" exact element={<Newpassword />} />

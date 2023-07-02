@@ -24,7 +24,6 @@ export default function Products() {
       });
       setOrders(response.data);
 
-      // Assuming you have a separate API endpoint to fetch the user type
       const userResponse = await axios.get(
         `http://localhost:3006/users/allUsers`,
         {
@@ -66,6 +65,7 @@ export default function Products() {
       deleteOrder(id);
     }
   }
+
   const handleQuantityChange = (event, productId) => {
     const newQuantity = parseInt(event.target.value);
     const updatedOrders = orders.map((order) => {
@@ -81,11 +81,9 @@ export default function Products() {
     });
     setOrders(updatedOrders);
 
-    // Update the selected products state
     const selected = updatedOrders.filter((order) => order.selected);
     setSelectedProducts(selected);
 
-    // Check if any product is selected
     setIsProductSelected(selected.length > 0);
   };
 
@@ -102,22 +100,23 @@ export default function Products() {
     });
     setOrders(updatedOrders);
 
-    // Update the selected products state
     const selected = updatedOrders.filter((order) => order.selected);
     setSelectedProducts(selected);
 
-    // Check if any product is selected
     setIsProductSelected(selected.length > 0);
   };
-  //placing order
-  const placeOrder = async () => {
-    console.log(selectedProducts);
-    const token = localStorage.getItem("token");
 
+  const placeOrder = async () => {
+    const token = localStorage.getItem("token");
+    console.log(selectedProducts);
     try {
+      const selectedProductIds = selectedProducts.map(
+        (product) => product.product_Id
+      );
+
       await axios.post(
         "http://localhost:3006/orders/placeOrder",
-        selectedProducts,
+        { selectedProductIds },
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -131,67 +130,39 @@ export default function Products() {
       console.error("Error placing order:", error);
     }
   };
-  // const placeOrder = async () => {
-  //   const token = localStorage.getItem("token");
-  //   const username = localStorage.getItem("username");
-
-  //   const orderData = {
-  //     username: username,
-  //     products: selectedProducts,
-  //   };
-
-  //   try {
-  //     await axios.post("http://localhost:3006/orders/placeOrder", orderData, {
-  //       headers: {
-  //         Authorization: "Bearer " + token,
-  //       },
-  //     });
-  //     setIsOrderPlaced(true);
-  //     setSelectedProducts([]);
-  //     // Perform any necessary actions after placing the order
-  //   } catch (error) {
-  //     console.error("Error placing order:", error);
-  //   }
-  // };
 
   return (
-    <div className="order-container ">
+    <div className="order-container">
       <div className="row justify-content-center d-flex align-items-center">
         <div className="col-lg-9 col-md-8 col-xs-10 col-sm-10">
           <table className="table table-striped table-bordered">
             <thead>
               <tr className="text-white">
                 {userType !== "normal" && (
-                  <th th="true" className="checkbox-column text-white">
-                    Product
-                  </th>
+                  <th className="checkbox-column text-white">Product</th>
                 )}
-
                 <th className="text-white">Quantity</th>
-
                 <th className="text-white">Amount</th>
                 {userType !== "normal" && (
-                  <th className="actions text-white">Controls</th>
+                  <th className="actions text-white">For Admins</th>
                 )}
               </tr>
             </thead>
-
             <tbody>
               {Array.isArray(orders) && orders.length > 0 ? (
                 orders.map((order) => (
                   <tr key={order.product_Id}>
-                    <td className="w-25 ">
-                      <div className="d-flex ">
+                    <td className="w-25">
+                      <div className="d-flex align-items-center">
                         {userType !== "normal" && (
-                          <td className="checkbox-column mx-1">
-                            <input
-                              type="checkbox"
-                              checked={order.selected || false}
-                              onChange={(event) =>
-                                handleCheckboxChange(event, order.product_Id)
-                              }
-                            />
-                          </td>
+                          <input
+                            className="checkbox-column mx-1"
+                            type="checkbox"
+                            checked={order.selected || false}
+                            onChange={(event) =>
+                              handleCheckboxChange(event, order.product_Id)
+                            }
+                          />
                         )}
                         {order.Product}
                       </div>
@@ -212,16 +183,14 @@ export default function Products() {
                         <option value="5">5</option>
                       </select>
                     </td>
-                    <td className="w-25">
-                      {order.Amount /*.toLocaleString()*/}
-                    </td>
+                    <td className="w-25">{order.Amount.toLocaleString()}</td>
                     {userType !== "normal" && (
                       <td className="actions w-25">
                         <button
                           onClick={() => confirmDeleteOrder(order.product_Id)}
                           className="btn btn-sm btn-danger"
                         >
-                          Delete
+                          Delete Product
                         </button>
                       </td>
                     )}
@@ -229,7 +198,7 @@ export default function Products() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6">No Products? Click Add Product!.</td>
+                  <td colSpan="6">No Products? Click Add Product!</td>
                 </tr>
               )}
             </tbody>
@@ -253,15 +222,13 @@ export default function Products() {
               )}
             </div>
             <div className="d-flex justify-content-end">
-              <Link>
-                <button
-                  onClick={placeOrder}
-                  className="bg_btn btn btn-success"
-                  disabled={!isProductSelected || isOrderPlaced}
-                >
-                  Place order
-                </button>
-              </Link>
+              <button
+                onClick={placeOrder}
+                className="bg_btn btn btn-success"
+                disabled={!isProductSelected || isOrderPlaced}
+              >
+                Place order
+              </button>
             </div>
           </div>
         </div>

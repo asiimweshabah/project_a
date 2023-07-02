@@ -21,12 +21,15 @@ const SideMenu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userType, setUserType] = useState("");
+
   useEffect(() => {
     const checkLoggedIn = () => {
       const token = localStorage.getItem("token");
       setIsLoggedIn(!!token);
       const email = localStorage.getItem("email");
       setUserEmail(email || "");
+      const userType = localStorage.getItem("userType");
+      setUserType(userType || "");
     };
 
     checkLoggedIn();
@@ -49,7 +52,6 @@ const SideMenu = () => {
           <div className="d-flex align-items-center">
             <div className="navbars d-flex align-items-center">
               <FaIcons.FaBars onClick={showSidebar} className="open" />
-
               <h4 id="logo">Odyssey</h4>
             </div>
             <nav className={!sidebar ? "nav-menu" : "nav-menu active"}>
@@ -116,47 +118,45 @@ const SideMenu = () => {
                       Users
                     </Link>
                   </li>
+                  <li className="navbar-item">
+                    {userType !== "admin" && (
+                      <Link
+                        to="/register"
+                        onClick={toggleModal}
+                        className="Link  d-flex align-items-center"
+                      >
+                        <MdAccountCircle
+                          className="ico mx-2"
+                          style={{ fontSize: " 25px" }}
+                        />
+                        Add User
+                      </Link>
+                    )}
+                  </li>
 
                   <li className="navbar-item">
-                    <Link
-                      to="/register"
-                      onClick={toggleModal}
-                      className="Link  d-flex align-items-center"
-                    >
-                      <MdAccountCircle
-                        className="ico mx-2"
-                        style={{ fontSize: " 25px" }}
-                      />
-                      Add User
-                    </Link>
-                  </li>
-                  <li className="navbar-item">
                     {isLoggedIn ? (
-                      <li className="navbar-item">
-                        <Link
-                          onClick={toggleModal}
-                          className="Link  d-flex align-items-center"
-                        >
-                          <RiLogoutCircleFill
-                            className="ico mx-2"
-                            style={{ fontSize: " 25px" }}
-                          />
-                          Logout
-                        </Link>
-                      </li>
+                      <Link
+                        onClick={toggleModal}
+                        className="Link  d-flex align-items-center"
+                      >
+                        <RiLogoutCircleFill
+                          className="ico mx-2"
+                          style={{ fontSize: " 25px" }}
+                        />
+                        Logout
+                      </Link>
                     ) : (
-                      <li className="navbar-item">
-                        <Link
-                          to="/login"
-                          className="Link  d-flex align-items-center"
-                        >
-                          <RiLoginCircleFill
-                            className="ico mx-2"
-                            style={{ fontSize: " 25px" }}
-                          />
-                          Login
-                        </Link>
-                      </li>
+                      <Link
+                        to="/login"
+                        className="Link  d-flex align-items-center"
+                      >
+                        <RiLoginCircleFill
+                          className="ico mx-2"
+                          style={{ fontSize: " 25px" }}
+                        />
+                        Login
+                      </Link>
                     )}
                   </li>
                 </div>

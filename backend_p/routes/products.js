@@ -22,7 +22,7 @@ app.post(
 //delete an Product
 app.delete(
   "/deleteProduct/:id",
-  // [userAuther, checkAdmin],
+  [userAuther, checkAdmin],
   productsController.deleteProduct
 );
 

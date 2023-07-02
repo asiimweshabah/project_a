@@ -6,7 +6,6 @@ const Outlets = () => {
     <div>
       <React.Fragment>
         <SideMenu />
-
         <Outlet />
       </React.Fragment>
     </div>
