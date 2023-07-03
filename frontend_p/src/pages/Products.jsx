@@ -67,14 +67,14 @@ export default function Products() {
   }
 
   const handleQuantityChange = (event, productId) => {
-    const newQuantity = parseInt(event.target.value);
+    const Quantity = parseInt(event.target.value);
     const updatedOrders = orders.map((order) => {
       if (order.product_Id === productId && order.selected) {
-        const newAmount = order.Price * newQuantity;
+        const Amount = order.Price * Quantity;
         return {
           ...order,
-          Quantity: newQuantity,
-          Amount: newAmount,
+          Quantity: Quantity,
+          Amount: Amount,
         };
       }
       return order;
@@ -125,7 +125,6 @@ export default function Products() {
       );
       setIsOrderPlaced(true);
       setSelectedProducts([]);
-      // Perform any necessary actions after placing the order
     } catch (error) {
       console.error("Error placing order:", error);
     }

@@ -3,9 +3,11 @@ module.exports = {
   async placeOrder(req, res, next) {
     try {
       const { selectedProductIds } = req.body;
-      const { Username, user_Id } = req.user;
+      const { Username, users_Id } = req.user;
+
       const verifyUserQuery = `SELECT * FROM users WHERE users_Id = ?`;
-      const userExists = await executeQuery(verifyUserQuery, [user_Id]);
+      const userExists = await executeQuery(verifyUserQuery, [users_Id]);
+
       if (userExists === null) {
         throw new Error("User does not exist.");
       }
@@ -14,14 +16,15 @@ module.exports = {
         selectedProductIds,
       ]);
       const insertOrderQuery = `
-    INSERT INTO orders (user_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date)
+    INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
       const currentDate = new Date();
       for (const product of selectedProducts) {
         const { product_Id, Product, Price, Quantity, Amount } = product;
+
         await executeQuery(insertOrderQuery, [
-          user_Id,
+          users_Id,
           Username,
           product_Id,
           Product,
@@ -34,6 +37,7 @@ module.exports = {
       res.status(200).send("Order placed successfully");
     } catch (error) {
       console.error("Error placing order:", error);
+
       res.status(500).send("Error placing order");
     }
   },
@@ -54,9 +58,9 @@ module.exports = {
 
   async getOrdersByUser(req, res, next) {
     try {
-      const { user_Id } = req.user;
-      const getUserOrdersQuery = `SELECT * FROM orders WHERE user_Id = ?`;
-      const orders = await executeQuery(getUserOrdersQuery, [user_Id]);
+      const { users_Id } = req.user;
+      const getUserOrdersQuery = `SELECT * FROM orders WHERE users_Id = ?`;
+      const orders = await executeQuery(getUserOrdersQuery, [users_Id]);
 
       res.status(200).json(orders);
     } catch (error) {

@@ -9,6 +9,7 @@ module.exports = {
       if (!product || !price || !quantity || !amount) {
         return res.status(400).send({ message: "Invalid Product data" });
       }
+
       const insertProductQuery =
         "INSERT INTO products (Product, Price, Quantity, Amount) VALUES (?, ?, ?, ?)";
 

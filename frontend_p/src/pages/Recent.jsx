@@ -3,35 +3,26 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Orders() {
-  const [orders, setOrders] = useState([]);
+  const [usersOrders, setUsersOrders] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    getOrdersByUser();
   }, []);
 
-  async function fetchData() {
+  async function getOrdersByUser(userId) {
     try {
-      const response = await axios.get(`http://localhost:3006/placeOrder`);
-      setOrders(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function deleteOrder(id) {
-    try {
-      await axios.delete(
-        `http://localhost:3006/placeOrder/deleteProduct/${id}`
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:3006/orders/myOrders/${userId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
       );
-      await fetchData();
+      setUsersOrders(response.data);
     } catch (error) {
       console.error(error);
-    }
-  }
-
-  function confirmDeleteOrder(id) {
-    if (id) {
-      deleteOrder(id);
     }
   }
 
@@ -50,13 +41,13 @@ export default function Orders() {
             </thead>
 
             <tbody>
-              {Array.isArray(orders) && orders.length > 0 ? (
-                orders.map((order) => (
+              {Array.isArray(usersOrders) && usersOrders.length > 0 ? (
+                usersOrders.map((order) => (
                   <tr key={order.product_Id}>
                     <td className="w-25">{order.Product}</td>
                     <td className="w-25">{order.Quantity}</td>
                     <td className="w-25">{order.Amount}</td>
-                    <td className="w-25">{order.Date}</td>
+                    <td className="w-25">{order.order_date.split("T")[0]}</td>
                   </tr>
                 ))
               ) : (

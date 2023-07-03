@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -10,7 +9,6 @@ function Admin() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  // const [activeUsers, setActiveUsers] = useState([]);
   const [userActivationStatus, setUserActivationStatus] = useState({});
 
   useEffect(() => {
@@ -18,7 +16,7 @@ function Admin() {
     if (storedActiveUsers) {
       const parsedActiveUsers = JSON.parse(storedActiveUsers);
       const activationStatus = parsedActiveUsers.reduce((acc, userId) => {
-        acc[userId] = true; // Assuming active users are stored as an array of user IDs
+        acc[userId] = true;
         return acc;
       }, {});
       setUserActivationStatus(activationStatus);
@@ -26,6 +24,10 @@ function Admin() {
 
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    filterUsers();
+  }, [selectedCompany, selectedUserType]);
 
   async function fetchUsers() {
     try {
@@ -37,54 +39,56 @@ function Admin() {
       });
 
       const allUsers = response.data;
-      let filteredUsers = allUsers;
-
-      if (selectedCompany) {
-        filteredUsers = filteredUsers.filter(
-          (user) => user.Company === selectedCompany
-        );
-      }
-
-      if (selectedUserType) {
-        filteredUsers = filteredUsers.filter(
-          (user) => user.UserType === selectedUserType
-        );
-      }
-
-      setUsers(users);
-      setFilteredUsers(filteredUsers);
+      setUsers(allUsers);
+      filterUsers(allUsers);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function deleteUser(users_Id) {
+  function filterUsers(allUsers = users) {
+    let filteredUsers = allUsers;
+
+    if (selectedCompany) {
+      filteredUsers = filteredUsers.filter(
+        (user) => user.Company === selectedCompany
+      );
+    }
+
+    if (selectedUserType) {
+      filteredUsers = filteredUsers.filter(
+        (user) => user.UserType === selectedUserType
+      );
+    }
+
+    setFilteredUsers(filteredUsers);
+  }
+
+  async function deleteUser(userId) {
     try {
       const token = localStorage.getItem("token");
       const result = window.confirm("Deleting user?");
       if (result) {
-        await axios.delete(
-          `http://localhost:3006/users/deleteUser/${users_Id}`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        await axios.delete(`http://localhost:3006/users/deleteUser/${userId}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
         await fetchUsers();
       }
     } catch (error) {
       console.error(error);
     }
   }
-  const toggleUserActivation = async (users_Id) => {
+
+  const toggleUserActivation = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      const userIsActive = userActivationStatus[users_Id];
+      const userIsActive = userActivationStatus[userId];
 
       if (userIsActive) {
         await axios.put(
-          `http://localhost:3006/users/deactivate/${users_Id}`,
+          `http://localhost:3006/users/deactivate/${userId}`,
           {},
           {
             headers: {
@@ -94,7 +98,7 @@ function Admin() {
         );
       } else {
         await axios.put(
-          `http://localhost:3006/users/activate/${users_Id}`,
+          `http://localhost:3006/users/activate/${userId}`,
           {},
           {
             headers: {
@@ -106,7 +110,7 @@ function Admin() {
 
       const updatedActivationStatus = {
         ...userActivationStatus,
-        [users_Id]: !userIsActive,
+        [userId]: !userIsActive,
       };
       setUserActivationStatus(updatedActivationStatus);
 
@@ -155,8 +159,6 @@ function Admin() {
               <option value="">All User Types</option>
               <option value="normal">Normal</option>
               <option value="admin">Admin</option>
-
-              {/* Add more options for different user types */}
             </select>
           </div>
           <table className="table table-striped table-bordered">

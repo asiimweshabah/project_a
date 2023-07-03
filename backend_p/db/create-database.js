@@ -48,7 +48,7 @@ const createProductsTable = async () => {
 const createOrdersTableQuery = `
 CREATE TABLE IF NOT EXISTS orders (
   order_Id INT AUTO_INCREMENT PRIMARY KEY,
-  user_Id INT NOT NULL,
+  users_Id INT NOT NULL,
   Username VARCHAR(255) NOT NULL,
   product_Id INT NOT NULL,
   Product VARCHAR(255) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS orders (
   Amount DECIMAL(10, 2),
   order_date DATE DEFAULT CURRENT_TIMESTAMP,
   debt FLOAT,
-  FOREIGN KEY (user_Id) REFERENCES users(users_Id) ON DELETE CASCADE,
+  FOREIGN KEY (users_Id) REFERENCES users(users_Id) ON DELETE CASCADE,
   FOREIGN KEY (product_Id) REFERENCES products(product_Id) ON DELETE CASCADE
 )`;
 
