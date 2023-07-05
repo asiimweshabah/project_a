@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../Menu/Navbar";
+
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function AddProduct() {
 
   return (
     <div>
-      <Navbar />
+
 
       <div className="container top">
         <form onSubmit={submit} action="">

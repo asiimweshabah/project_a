@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../Menu/Navbar";
 
 export default function Orders() {
   const [usersOrders, setUsersOrders] = useState([]);
@@ -29,7 +28,6 @@ export default function Orders() {
 
   return (
     <div>
-      <Navbar />
       <div className="order-container">
         <div className="row justify-content-center d-flex align-items-center">
           <div className="col-lg-9 col-md-12 col-xs-11 col-sm-12">

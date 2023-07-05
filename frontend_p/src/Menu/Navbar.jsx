@@ -37,52 +37,46 @@ export const Navbar = () => {
     <nav className="nav-men mee fixed-top">
       <div class="container-fluid align-items-center justify-content-center d-flex">
         <ul class="w-50 justify-content-between d-flex align-items-center pt-3">
-          {/* <div className=""> */}
-          <div className="">
-            <li className="navitems_2">
-              <Link to="/products" className="Link ">
-                My Orde
-              </Link>
-            </li>
+          <li className="navitems_2">
+            <Link to="/products" className="Link ">
+              My Order
+            </Link>
+          </li>
 
-            <li className="navitems_2">
-              <Link to="/recent" className="Link ">
-                Recent Orders
-              </Link>
-            </li>
+          <li className="navitems_2">
+            <Link to="/recent" className="Link ">
+              Recent Orders
+            </Link>
+          </li>
 
-            <li className="navitems_2">
-              <Link to="/admin_orderhistory" className="Link">
-                Order History
-              </Link>
-            </li>
-          </div>
+          <li className="navitems_2">
+            <Link to="/admin_orderhistory" className="Link">
+              Order History
+            </Link>
+          </li>
 
-          <div className="">
-            <li className="navitems_2">
-              <Link to="/admin_users" className="Link">
-                Users
-              </Link>
-            </li>
+          <li className="navitems_2">
+            <Link to="/admin_users" className="Link">
+              Users
+            </Link>
+          </li>
 
-            <li className="navitems_2">
-              <Link to="/register" className="Link">
-                Add User
+          <li className="navitems_2">
+            <Link to="/register" className="Link">
+              Add User
+            </Link>
+          </li>
+          <li className="navitems_2">
+            {isLoggedIn ? (
+              <Link onClick={toggleModal} className="Link">
+                Logout
               </Link>
-            </li>
-            <li className="navitems_2">
-              {isLoggedIn ? (
-                <Link onClick={toggleModal} className="Link">
-                  Logout
-                </Link>
-              ) : (
-                <Link to="/login" className="Link ">
-                  Login
-                </Link>
-              )}
-            </li>
-          </div>
-          {/* </div> */}
+            ) : (
+              <Link to="/login" className="Link">
+                Login
+              </Link>
+            )}
+          </li>
         </ul>
       </div>
       <div className="area-3">

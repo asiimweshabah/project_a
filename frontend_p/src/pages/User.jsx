@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../Menu/Navbar";
+
 export default function User() {
   const [orders, setOrders] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -57,7 +57,6 @@ export default function User() {
 
   return (
     <div>
-      <Navbar />
       <div className="order-container">
         <div className="row justify-content-center d-flex align-items-center">
           <div className="col-lg-9 col-md-12 col-xs-12 col-sm-12">

@@ -13,10 +13,11 @@ import AddProduct from "./pages/AddProduct";
 import Newpassword from "./Components/Newpassword";
 import OrderHistory from "./pages/OrderHistory";
 import Recent from "./pages/Recent";
-
+import Navbar from "./Menu/Navbar";
 function App() {
   return (
     <div className="App">
+      <Navbar />
       <Routes>
         <Route path="/" element={<Outlets />}>
           <Route path="/" exact element={<Home />} />

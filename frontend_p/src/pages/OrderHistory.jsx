@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../Menu/Navbar";
+
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -77,7 +77,7 @@ export default function Orders() {
 
   return (
     <div>
-      <Navbar/>
+      
     
     <div className="order-container">
       <div className="row justify-content-center d-flex align-items-center">
