@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-
 export default function AddProduct() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -62,8 +61,6 @@ export default function AddProduct() {
 
   return (
     <div>
-
-
       <div className="container top">
         <form onSubmit={submit} action="">
           <div className="container mt-5 row d-flex justify-content-center">
