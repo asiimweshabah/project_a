@@ -8,20 +8,26 @@ module.exports = {
       const verifyUserQuery = `SELECT * FROM users WHERE users_Id = ?`;
       const userExists = await executeQuery(verifyUserQuery, [users_Id]);
 
-      if (userExists === null) {
+      if (!userExists) {
         throw new Error("User does not exist.");
       }
+
       const selectedProductsQuery = `SELECT * FROM products WHERE product_Id IN (?)`;
       const selectedProducts = await executeQuery(selectedProductsQuery, [
         selectedProductIds,
       ]);
+
       const insertOrderQuery = `
-    INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
       const currentDate = new Date();
+
       for (const product of selectedProducts) {
-        const { product_Id, Product, Price, Quantity, Amount } = product;
+        const { product_Id, Product, Price } = product;
+        const { Quantity } = product;
+        const Amount = Price * Quantity;
 
         await executeQuery(insertOrderQuery, [
           users_Id,
@@ -34,10 +40,10 @@ module.exports = {
           currentDate,
         ]);
       }
+
       res.status(200).send("Order placed successfully");
     } catch (error) {
       console.error("Error placing order:", error);
-
       res.status(500).send("Error placing order");
     }
   },

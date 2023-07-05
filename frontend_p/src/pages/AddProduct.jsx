@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../Menu/Navbar";
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -60,66 +61,70 @@ export default function AddProduct() {
   }
 
   return (
-    <div className="container top">
-      <form onSubmit={submit} action="">
-        <div className="container mt-5 row d-flex justify-content-center">
-          <div className="row col-md-6 col-sm-12 col-xs-12">
-            <div className="m-2">
-              <label>
-                Product <span className="text-danger">*</span>
-              </label>
-              <input
-                value={formData.product}
-                onChange={handleInputChange}
-                className="form-control"
-                type="text"
-                name="product"
-                required
-              />
-            </div>
-            <div className="col-12 m-2">
-              <label>Price</label>
-              <input
-                value={formData.price}
-                onChange={handleInputChange}
-                className="form-control"
-                type="text"
-                name="price"
-              />
-            </div>
-            <div className="col-12 m-2">
-              <label>Quantity</label>
-              <input
-                value={formData.quantity}
-                onChange={handleInputChange}
-                className="form-control"
-                type="text"
-                name="quantity"
-              />
-            </div>
-            <div className="col-12 m-2">
-              <label>Amount</label>
-              <input
-                value={formData.amount}
-                onChange={handleInputChange}
-                className="form-control"
-                type="text"
-                name="amount"
-              />
-            </div>
-            <div className="col-12 d-flex">
-              <div className="d-flex flex-row m-2  w-100 justify-content-between">
-                <Link to="/addproducts">
-                  <button className="btn btn-secondary">Cancel</button>
-                </Link>
-                <button type="submit" className="btn btn-primary">
-                  Add
-                </button>
+    <div>
+      <Navbar />
+
+      <div className="container top">
+        <form onSubmit={submit} action="">
+          <div className="container mt-5 row d-flex justify-content-center">
+            <div className="row col-md-6 col-sm-12 col-xs-12">
+              <div className="m-2">
+                <label>
+                  Product <span className="text-danger">*</span>
+                </label>
+                <input
+                  value={formData.product}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  type="text"
+                  name="product"
+                  required
+                />
+              </div>
+              <div className="col-12 m-2">
+                <label>Price</label>
+                <input
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  type="text"
+                  name="price"
+                />
+              </div>
+              <div className="col-12 m-2">
+                <label>Quantity</label>
+                <input
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  type="text"
+                  name="quantity"
+                />
+              </div>
+              <div className="col-12 m-2">
+                <label>Amount</label>
+                <input
+                  value={formData.amount}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  type="text"
+                  name="amount"
+                />
+              </div>
+              <div className="col-12 d-flex">
+                <div className="d-flex flex-row m-2  w-100 justify-content-between">
+                  <Link to="/addproducts">
+                    <button className="btn btn-secondary">Cancel</button>
+                  </Link>
+                  <button type="submit" className="btn btn-primary">
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

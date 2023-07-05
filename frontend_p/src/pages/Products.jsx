@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../Menu/Navbar";
 
 export default function Products() {
   const [orders, setOrders] = useState([]);
@@ -106,17 +107,49 @@ export default function Products() {
     setIsProductSelected(selected.length > 0);
   };
 
+  // const placeOrder = async () => {
+  //   const token = localStorage.getItem("token");
+  //   console.log(selectedProducts);
+  //   try {
+  //     const selectedProductIds = selectedProducts.map(
+  //       (product) => product.product_Id
+  //     );
+
+  //     await axios.post(
+  //       "http://localhost:3006/orders/placeOrder",
+  //       { selectedProductIds },
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + token,
+  //         },
+  //       }
+  //     );
+  //     setIsOrderPlaced(true);
+  //     setSelectedProducts([]);
+  //   } catch (error) {
+  //     console.error("Error placing order:", error);
+  //   }
+  // };
   const placeOrder = async () => {
     const token = localStorage.getItem("token");
     console.log(selectedProducts);
+
     try {
       const selectedProductIds = selectedProducts.map(
         (product) => product.product_Id
       );
 
+      const selectedProductData = {};
+      selectedProducts.forEach((product) => {
+        selectedProductData[product.product_Id] = {
+          Quantity: product.Quantity,
+          Amount: product.Amount,
+        };
+      });
+
       await axios.post(
         "http://localhost:3006/orders/placeOrder",
-        { selectedProductIds },
+        { selectedProductIds, selectedProductData }, // Pass both selectedProductIds and selectedProductData
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -131,6 +164,9 @@ export default function Products() {
   };
 
   return (
+    <div>
+      <Navbar/>
+   
     <div className="order-container">
       <div className="row justify-content-center d-flex align-items-center">
         <div className="col-lg-9 col-md-8 col-xs-10 col-sm-10">
@@ -232,6 +268,6 @@ export default function Products() {
           </div>
         </div>
       </div>
-    </div>
+    </div> </div>
   );
 }

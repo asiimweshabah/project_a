@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../Menu/Navbar";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -136,6 +137,9 @@ function Admin() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
+    <div>
+      <Navbar/>
+    
     <div className="order-container">
       <div className="row justify-content-center d-flex align-items-center">
         <div className="col-sm-12 col-xs-12 col-md-9">
@@ -249,7 +253,7 @@ function Admin() {
           </div>
         </div>
       </div>
-    </div>
+    </div></div>
   );
 }
 

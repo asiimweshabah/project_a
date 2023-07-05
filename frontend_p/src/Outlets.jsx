@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import SideMenu from "./Menu/SideMenu";
+
 const Outlets = () => {
   return (
     <div>

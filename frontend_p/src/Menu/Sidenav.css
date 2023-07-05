@@ -4,7 +4,8 @@
 body {
   background-color: #ffffff;
 }
-.nav-menu {
+.nav-menu,
+.semi_nav {
   background-color: #e8e6ff;
   z-index: 1;
   width: 380px;
@@ -14,6 +15,10 @@ body {
   left: -100%;
   transition: 850ms;
 }
+.mee {
+  background-color: #e8e6ff;
+}
+
 .close {
   margin-left: 11rem;
   font-size: 2rem;
@@ -47,6 +52,11 @@ body {
   justify-content: flex-start;
   align-items: center;
 }
+.navitems_2 {
+  list-style: none;
+  
+}
+
 .Link {
   text-decoration: none;
   color: #5f2781;
