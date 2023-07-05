@@ -38,6 +38,7 @@ export default function Orders() {
                   <th className="text-white">Quantity</th>
                   <th className="actions text-white">Amount</th>
                   <th className="text-white">Date</th>
+                  {/* <th className="actions text-white">Debt</th> */}
                 </tr>
               </thead>
 
@@ -45,10 +46,13 @@ export default function Orders() {
                 {Array.isArray(usersOrders) && usersOrders.length > 0 ? (
                   usersOrders.map((order) => (
                     <tr key={order.product_Id}>
-                      <td className="w-25">{order.Product}</td>
-                      <td className="w-25">{order.Quantity}</td>
-                      <td className="w-25">{order.Amount}</td>
-                      <td className="w-25">{order.order_date.split("T")[0]}</td>
+                      <td className="ordr-with">{order.Product}</td>
+                      <td className="ordr-with">{order.Quantity}</td>
+                      <td className="ordr-with">{order.Amount}</td>
+                      <td className="ordr-with">
+                        {order.order_date.split("T")[0]}
+                      </td>
+                      {/* <td className="ordr-with">{order.debt}</td> */}
                     </tr>
                   ))
                 ) : (
@@ -60,7 +64,7 @@ export default function Orders() {
             </table>
           </div>
         </div>
-      </div>{" "}
+      </div>
     </div>
   );
 }

@@ -2,9 +2,11 @@ const executeQuery = require("../db/execute-query");
 module.exports = {
   async placeOrder(req, res, next) {
     try {
-      const { selectedProductIds } = req.body;
+      const { selectedProductIds, selectedProductData } = req.body;
       const { Username, users_Id } = req.user;
-
+      let total = 0;
+      let debt = 0;
+      // Validate user existence
       const verifyUserQuery = `SELECT * FROM users WHERE users_Id = ?`;
       const userExists = await executeQuery(verifyUserQuery, [users_Id]);
 
@@ -12,32 +14,37 @@ module.exports = {
         throw new Error("User does not exist.");
       }
 
-      const selectedProductsQuery = `SELECT * FROM products WHERE product_Id IN (?)`;
-      const selectedProducts = await executeQuery(selectedProductsQuery, [
-        selectedProductIds,
-      ]);
+      for (const productId in selectedProductData) {
+        const productData = selectedProductData[productId];
+        const { Price, Quantity } = productData;
+        total += Price * Quantity;
+      }
 
+      if (total > 1000) {
+        debt = total - 1000;
+      }
+
+      // Inserting orders into the orders table
       const insertOrderQuery = `
-        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date, debt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-
       const currentDate = new Date();
 
-      for (const product of selectedProducts) {
-        const { product_Id, Product, Price } = product;
-        const { Quantity } = product;
-        const Amount = Price * Quantity;
+      for (const productId in selectedProductData) {
+        const productData = selectedProductData[productId];
+        const { Product, Price, Quantity, Amount } = productData;
 
         await executeQuery(insertOrderQuery, [
           users_Id,
           Username,
-          product_Id,
+          productId,
           Product,
           Price,
           Quantity,
           Amount,
           currentDate,
+          debt,
         ]);
       }
 
@@ -47,7 +54,6 @@ module.exports = {
       res.status(500).send("Error placing order");
     }
   },
-
   async getAllOrders(req, res, next) {
     try {
       const getAllOrdersQuery = `SELECT * FROM orders`;

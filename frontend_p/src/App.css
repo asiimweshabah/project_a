@@ -23,6 +23,9 @@ body {
   }
 }
 
+.ordr-with {
+  width: 5%;
+}
 .bg_btn,
 th {
   background-color: #5f2781 !important;

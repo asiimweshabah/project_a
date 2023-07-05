@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -76,23 +75,19 @@ export default function Orders() {
   };
 
   return (
-    <div>
-      
-    
     <div className="order-container">
       <div className="row justify-content-center d-flex align-items-center">
         <div className="col-lg-9 col-md-12 col-xs-11 col-sm-12">
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between align-items-center mb-0">
             <input
-              className="form-control mb-4 w-50"
+              className="w-50 form-control"
               placeholder="Search by UserName"
               value={username}
               onChange={handleUsernameChange}
             />
-
             <input
               type="date"
-              className="form-control mx-3 mb-4 w-50"
+              className="w-50 mx-3 form-control"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
@@ -104,6 +99,7 @@ export default function Orders() {
                 <th className="text-white">Product</th>
                 <th className="text-white">Quantity</th>
                 <th className="text-white">Amount</th>
+                <th className="text-white">Debt</th>
                 <th className="text-white">Date</th>
               </tr>
             </thead>
@@ -115,6 +111,7 @@ export default function Orders() {
                     <td className="T-width">{order.Product}</td>
                     <td className="T-width">{order.Quantity}</td>
                     <td className="T-width">{order.Amount}</td>
+                    <td className="T-width">{order.debt}</td>
                     <td className="T-width">
                       {order.order_date.split("T")[0]}
                     </td>
@@ -155,6 +152,6 @@ export default function Orders() {
           </div>
         </div>
       </div>
-    </div></div>
+    </div>
   );
 }
