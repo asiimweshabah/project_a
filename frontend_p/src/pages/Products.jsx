@@ -134,7 +134,8 @@ export default function Products() {
           },
         }
       );
-
+      setIsOrderPlaced(true);
+      setSelectedProducts([]);
       // Update the products table with selected products and their quantities and amounts
       await axios.post(
         "http://localhost:3006/products/updateProducts",

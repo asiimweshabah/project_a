@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
-import Newpassword from "./Components/Newpassword";
+// import Newpassword from "./Components/Newpassword";
 import OrderHistory from "./pages/OrderHistory";
 import Recent from "./pages/Recent";
 import Navbar from "./Menu/Navbar";
@@ -23,7 +23,7 @@ function App() {
           <Route path="/" exact element={<Home />} />
         </Route>
 
-        <Route path="/resetPassword" exact element={<Newpassword />} />
+        {/* <Route path="/resetPassword" exact element={<Newpassword />} /> */}
         <Route path="/setpassword" exact element={<Setpassword />} />
         <Route path="/login" exact element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
