@@ -24,10 +24,16 @@ module.exports = {
         debt = total - 1000;
       }
 
+      // Calculate the total amount as the sum of the Amount column
+      const total_amount = Object.values(selectedProductData).reduce(
+        (sum, product) => sum + product.Amount,
+        0
+      );
+
       // Inserting orders into the orders table
       const insertOrderQuery = `
-        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, order_date, debt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, total_amount, order_date, debt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       const currentDate = new Date();
 
@@ -43,6 +49,7 @@ module.exports = {
           Price,
           Quantity,
           Amount,
+          total_amount,
           currentDate,
           debt,
         ]);

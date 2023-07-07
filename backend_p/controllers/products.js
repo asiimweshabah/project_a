@@ -5,19 +5,23 @@ module.exports = {
     try {
       const { product, price, quantity, amount } = req.body;
 
+      // Calculate the total amount as the sum of the amount column
+      const total_amount = +amount;
+
       // Validate input data
-      if (!product || !price || !quantity || !amount) {
+      if (!product || !price || !quantity || !amount || !total_amount) {
         return res.status(400).send({ message: "Invalid Product data" });
       }
 
       const insertProductQuery =
-        "INSERT INTO products (Product, Price, Quantity, Amount) VALUES (?, ?, ?, ?)";
+        "INSERT INTO products (Product, Price, Quantity, Amount, Total_Amount) VALUES (?, ?, ?, ?, ?)";
 
       await executeQuery(insertProductQuery, [
         product,
         price,
         quantity,
         amount,
+        total_amount,
       ]);
 
       res.send({ message: "Product placed successfully" });

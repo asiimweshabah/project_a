@@ -122,6 +122,7 @@ export default function Products() {
           Price: product.Price,
           Quantity: product.Quantity,
           Amount: product.Amount,
+          total_amount: product.total_amount,
         };
       });
 
@@ -167,6 +168,7 @@ export default function Products() {
                   )}
                   <th className="text-white">Quantity</th>
                   <th className="text-white">Amount</th>
+                  <th className="text-white">Total Amount</th>
                   {userType !== "normal" && (
                     <th className="actions text-white">For Admins</th>
                   )}
@@ -176,7 +178,7 @@ export default function Products() {
                 {Array.isArray(orders) && orders.length > 0 ? (
                   orders.map((order) => (
                     <tr key={order.product_Id}>
-                      <td className="w-25">
+                      <td className="ordr-with">
                         <div className="d-flex align-items-center">
                           {userType !== "normal" && (
                             <input
@@ -191,7 +193,7 @@ export default function Products() {
                           {order.Product}
                         </div>
                       </td>
-                      <td className="w-25">
+                      <td className="ordr-with">
                         <select
                           className="form-control"
                           value={order.Quantity}
@@ -207,9 +209,14 @@ export default function Products() {
                           <option value="5">5</option>
                         </select>
                       </td>
-                      <td className="w-25">{order.Amount.toLocaleString()}</td>
+                      <td className="ordr-with">
+                        {order.Amount.toLocaleString()}
+                      </td>
+                      <td className="ordr-with">
+                        {order.total_amount.toLocaleString()}
+                      </td>
                       {userType !== "normal" && (
-                        <td className="actions w-25">
+                        <td className="actions ordr-with">
                           <button
                             onClick={() => confirmDeleteOrder(order.product_Id)}
                             className="btn btn-sm btn-danger"

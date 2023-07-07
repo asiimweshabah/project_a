@@ -7,7 +7,7 @@ export default function Orders() {
   const [ordersPerPage] = useState(10);
   const [username, setUsername] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-
+  // const [totalAmount, setTotalAmount] = useState(0);
   useEffect(() => {
     fetchData();
   }, []);
@@ -74,6 +74,15 @@ export default function Orders() {
     setUsername(value);
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <div>
       <div className="order-container">
@@ -100,6 +109,7 @@ export default function Orders() {
                   <th className="text-white">Product</th>
                   <th className="text-white">Quantity</th>
                   <th className="text-white">Amount</th>
+                  <th className="text-white">Total Amount</th>
                   <th className="text-white">Debt</th>
                   <th className="text-white">Date</th>
                 </tr>
@@ -109,18 +119,20 @@ export default function Orders() {
                   currentOrders.map((order) => (
                     <tr key={order.order_Id}>
                       <td className="T-width">{order.Username}</td>
+
                       <td className="T-width">{order.Product}</td>
                       <td className="T-width">{order.Quantity}</td>
                       <td className="T-width">{order.Amount}</td>
+                      <td className="T-width">{order.total_amount}</td>
                       <td className="T-width">{order.debt}</td>
                       <td className="T-width">
-                        {order.order_date.split("T")[0]}
+                        {formatDate(order.order_date)}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5">
+                    <td colSpan="7">
                       No order history available for all users
                     </td>
                   </tr>

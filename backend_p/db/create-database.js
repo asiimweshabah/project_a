@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS products (
   Product VARCHAR(255) NOT NULL,
   Price DECIMAL(10, 2) NOT NULL,
   Quantity INT NOT NULL,
-  Amount DECIMAL(10, 2) NOT NULL
+  Amount DECIMAL(10, 2) NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL
 )`;
 
 const createProductsTable = async () => {
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS orders (
   Price DECIMAL(10, 2),
   Quantity INT,
   Amount DECIMAL(10, 2),
+  total_amount DECIMAL(10, 2) NOT NULL,
   order_date DATE DEFAULT CURRENT_TIMESTAMP,
   debt FLOAT,
   FOREIGN KEY (users_Id) REFERENCES users(users_Id) ON DELETE CASCADE,
