@@ -7,7 +7,6 @@ export default function Signin() {
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("normal");
   const [loginStatus, setLoginStatus] = useState("");
-  const [userEmail, setUserEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -40,7 +39,7 @@ export default function Signin() {
           setLoginStatus("User does not exist");
         } else if (response.data.message && response.data.token) {
           localStorage.setItem("token", response.data.token);
-          setUserEmail(response.data.email);
+
           navigate("/products");
         } else {
           setLoginStatus(response.data.error);

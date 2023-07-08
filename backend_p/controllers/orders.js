@@ -86,7 +86,22 @@ module.exports = {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Failed to fetch user orders", error: error.message });
+        .send({ message: "Failed to get user orders", error: error.message });
+    }
+  },
+
+  async deleteUserOrder(req, res, next) {
+    try {
+      const { users_Id } = req.user;
+      const sql = `DELETE FROM orders WHERE users_Id = ?`;
+      await executeQuery(sql, [users_Id]);
+      res.send({ message: "Order history cleared successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Failed to delete user orders",
+        error: error.message,
+      });
     }
   },
 

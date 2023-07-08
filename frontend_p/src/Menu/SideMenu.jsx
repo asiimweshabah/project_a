@@ -19,17 +19,11 @@ const SideMenu = () => {
   const showSidebar = () => setSidebar(!sidebar);
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userType, setUserType] = useState("");
 
   useEffect(() => {
     const checkLoggedIn = () => {
       const token = localStorage.getItem("token");
       setIsLoggedIn(!!token);
-      const email = localStorage.getItem("email");
-      setUserEmail(email || "");
-      const userType = localStorage.getItem("userType");
-      setUserType(userType || "");
     };
 
     checkLoggedIn();
@@ -119,19 +113,17 @@ const SideMenu = () => {
                     </Link>
                   </li>
                   <li className="navbar-item">
-                    {userType !== "admin" && (
-                      <Link
-                        to="/register"
-                        onClick={toggleModal}
-                        className="Link  d-flex align-items-center"
-                      >
-                        <MdAccountCircle
-                          className="ico mx-2"
-                          style={{ fontSize: " 25px" }}
-                        />
-                        Add User
-                      </Link>
-                    )}
+                    <Link
+                      to="/register"
+                      onClick={toggleModal}
+                      className="Link  d-flex align-items-center"
+                    >
+                      <MdAccountCircle
+                        className="ico mx-2"
+                        style={{ fontSize: " 25px" }}
+                      />
+                      Add User
+                    </Link>
                   </li>
 
                   <li className="navbar-item">
@@ -172,7 +164,6 @@ const SideMenu = () => {
                   className="ico mx-2"
                   style={{ fontSize: "25px" }}
                 />
-                {isLoggedIn && <p>{userEmail}</p>}
               </Link>
             </div>
           </div>

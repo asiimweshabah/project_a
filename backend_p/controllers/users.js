@@ -25,7 +25,7 @@ async function sendVerificationMessage(email) {
       html: `<body>
         <h1>Create an account</h1>
         <a href="http://localhost:3000/setpassword?email=${email}">
-          <button className="btn btn-primary">Create</button>
+          <button style="background-color: #5f2781; border-radius: 10px; border: #5f2781; color: white; padding: 10px 20px; cursor: pointer;">Create Account</button>
         </a>
       </body>`,
     };
@@ -40,6 +40,66 @@ async function sendVerificationMessage(email) {
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.TOKEN_SECRET /*, { expiresIn: "36000s" }*/);
 }
+
+//placing order alarm alert
+async function sendOrderPlacementAlert(userId, orderId, username) {
+  try {
+    const user = await executeQuery(
+      "SELECT email FROM users WHERE users_Id = ?",
+      [userId]
+    );
+
+    const mailOptions = {
+      from: "your-email@example.com",
+      to: user[0].email,
+      subject: "Reminder to place order",
+      html: `
+        <body>
+          <h1>Make your breakfast order</h1>
+          <p>You have an order pending. Please place the order before it expires.</p>
+          <a href="http://localhost:3000/products">
+          <button style="background-color: #5f2781; border-radius: 10px; border: #5f2781; color: white; padding: 10px 20px; cursor: pointer;">Make Order</button>
+        </a>
+        </body>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("Order placement alert email sent successfully");
+  } catch (error) {
+    console.error("Failed to send order placement alert email:", error);
+  }
+}
+
+async function handleOrderReminder() {
+  try {
+    const orders = await executeQuery("SELECT * FROM orders");
+
+    for (const order of orders) {
+      const userId = order.users_Id;
+      const user = await executeQuery(
+        "SELECT status FROM users WHERE users_Id = ?",
+        [userId]
+      );
+
+      if (
+        user.length > 0 &&
+        user[0].status === "Active" &&
+        order.status !== "Completed"
+      ) {
+        await sendOrderPlacementAlert(userId, order.order_Id);
+      }
+    }
+  } catch (error) {
+    console.error("Failed to handle order reminder:", error);
+  }
+}
+
+const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder);
+const scheduler2 = new cron.CronJob("0 18 * * *", handleOrderReminder);
+
+scheduler1.start();
+scheduler2.start();
 
 module.exports = {
   //logout user
@@ -75,6 +135,7 @@ module.exports = {
       const insertUserQuery =
         "INSERT INTO users (Company, UserType, Username, Email) VALUES (?, ?, ?, ?)";
       await executeQuery(insertUserQuery, [company, userType, username, email]);
+      await sendVerificationMessage(email);
 
       return res.send({
         message: "User registered successfully. Verification email sent.",

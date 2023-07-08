@@ -11,17 +11,17 @@ app.get("/myOrders/:id", [userAuther], ordersController.getOrdersByUser);
 // adding product by admin
 app.post("/placeOrder", [userAuther], ordersController.placeOrder);
 
-// app.post("/orders", [userAuther], ordersController.orders);
-
-//placing an order
-
-// app.post("/placeOrder", ordersController.placeOrder);
-
 //delete an order
 app.delete(
   "/deleteOrders",
   [userAuther, checkAdmin],
   ordersController.deleteAllOrders
+);
+
+app.delete(
+  "/deleteMyOrders/:id",
+  [userAuther],
+  ordersController.deleteUserOrder
 );
 
 // editorde

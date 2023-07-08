@@ -12,14 +12,10 @@ function Admin() {
   const [userActivationStatus, setUserActivationStatus] = useState({});
 
   useEffect(() => {
-    const storedActiveUsers = localStorage.getItem("activeUsers");
-    if (storedActiveUsers) {
-      const parsedActiveUsers = JSON.parse(storedActiveUsers);
-      const activationStatus = parsedActiveUsers.reduce((acc, userId) => {
-        acc[userId] = true;
-        return acc;
-      }, {});
-      setUserActivationStatus(activationStatus);
+    // Retrieve user activation status from local storage
+    const storedActivationStatus = localStorage.getItem("userActivationStatus");
+    if (storedActivationStatus) {
+      setUserActivationStatus(JSON.parse(storedActivationStatus));
     }
     filterUsers();
     fetchUsers();
@@ -111,10 +107,10 @@ function Admin() {
       setUserActivationStatus(updatedActivationStatus);
 
       // Save the updated activeUsers array to local storage
-      const activeUsers = Object.entries(updatedActivationStatus)
-        .filter(([userId, isActive]) => isActive)
-        .map(([userId]) => userId);
-      localStorage.setItem("activeUsers", JSON.stringify(activeUsers));
+      localStorage.setItem(
+        "userActivationStatus",
+        JSON.stringify(updatedActivationStatus)
+      );
 
       // Fetch the updated user list
       await fetchUsers();

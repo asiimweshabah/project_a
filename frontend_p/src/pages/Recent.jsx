@@ -25,10 +25,11 @@ export default function Orders() {
       console.error(error);
     }
   }
-  const totalAmount = usersOrders.reduce(
-    (sum, order) => sum + parseInt(order.Amount),
-    0
-  );
+  // const totalAmount = usersOrders.reduce(
+  //   (sum, order) => sum + parseInt(order.Amount),
+  //   0
+  // );
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -46,10 +47,11 @@ export default function Orders() {
               <thead>
                 <tr>
                   <th className="text-white">Product</th>
-                  <th className="text-white">Quantity</th>
                   <th className="text-white">Price</th>
+                  <th className="text-white">Quantity</th>
                   <th className="text-white">Date</th>
                   <th className="actions text-white">Amount</th>
+                  <th className="actions text-white">Total Amount</th>
                 </tr>
               </thead>
               <tbody>
@@ -57,12 +59,13 @@ export default function Orders() {
                   usersOrders.map((order) => (
                     <tr key={order.product_Id}>
                       <td className="ordr-with">{order.Product}</td>
-                      <td className="ordr-with">{order.Quantity}</td>
                       <td className="ordr-with">{order.Price}</td>
+                      <td className="ordr-with">{order.Quantity}</td>
                       <td className="ordr-with">
                         {formatDate(order.order_date)}
                       </td>
                       <td className="ordr-with">{order.Amount}</td>
+                      <td className="ordr-with">{order.total_amount}</td>
                     </tr>
                   ))
                 ) : (
@@ -70,14 +73,14 @@ export default function Orders() {
                     <td colSpan="5">No recent orders available</td>
                   </tr>
                 )}
-                <tr>
+                {/* <tr>
                   <td colSpan="4" className="ordr-with">
                     <b> Total Amount</b>
                   </td>
                   <td className="ordr-with">
                     <b> {totalAmount}</b>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
