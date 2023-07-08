@@ -79,6 +79,7 @@ export default function SignUp() {
         });
     }
   };
+  
   return (
     <div className="container form_container d-flex align-items-center justify-content-center w-100">
       <div className="form-grid w-100">

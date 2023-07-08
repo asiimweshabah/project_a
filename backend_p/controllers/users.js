@@ -2,6 +2,7 @@ const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const cron = require("cron");
 require("crypto").randomBytes(64).toString("hex");
 
 const transporter = nodemailer.createTransport({
@@ -74,7 +75,6 @@ module.exports = {
       const insertUserQuery =
         "INSERT INTO users (Company, UserType, Username, Email) VALUES (?, ?, ?, ?)";
       await executeQuery(insertUserQuery, [company, userType, username, email]);
-      await sendVerificationMessage(email);
 
       return res.send({
         message: "User registered successfully. Verification email sent.",

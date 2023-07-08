@@ -9,6 +9,25 @@ export default function Products() {
   const [isProductSelected, setIsProductSelected] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
+  // function setAlarmReminder(alarmTime, callback) {
+  //   const currentTime = new Date();
+  //   const timeDiff = alarmTime.getTime() - currentTime.getTime();
+
+  //   if (timeDiff > 0) {
+  //     setTimeout(callback, timeDiff);
+  //   }
+  // }
+
+  // // Example usage
+  // const alarmTime = new Date();
+  // alarmTime.setHours(9); // Set the alarm time to 9:00 AM
+
+  // function remindToPlaceOrder() {
+  //   console.log("Reminder: Place your order!");
+  // }
+
+  // setAlarmReminder(alarmTime, remindToPlaceOrder);
+
   useEffect(() => {
     fetchData();
     setUserType();

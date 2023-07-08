@@ -119,7 +119,6 @@ export default function Orders() {
                   currentOrders.map((order) => (
                     <tr key={order.order_Id}>
                       <td className="T-width">{order.Username}</td>
-
                       <td className="T-width">{order.Product}</td>
                       <td className="T-width">{order.Quantity}</td>
                       <td className="T-width">{order.Amount}</td>
