@@ -1,8 +1,8 @@
 const executeQuery = require("../db/execute-query");
-const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt"); //hiding password
+const nodemailer = require("nodemailer"); // sending messages
 const jwt = require("jsonwebtoken");
-const cron = require("cron");
+const cron = require("cron"); // making alert alarm
 require("crypto").randomBytes(64).toString("hex");
 
 const transporter = nodemailer.createTransport({
@@ -98,8 +98,8 @@ async function handleOrderReminder() {
 const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder);
 const scheduler2 = new cron.CronJob("0 18 * * *", handleOrderReminder);
 
-scheduler1.start();
-scheduler2.start();
+scheduler1.start(); //calling alert 1 to place order
+scheduler2.start(); //calling alert 2 to place order
 
 module.exports = {
   //logout user
