@@ -96,7 +96,7 @@ async function handleOrderReminder() {
 }
 
 const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder);
-const scheduler2 = new cron.CronJob("0 18 * * *", handleOrderReminder);
+const scheduler2 = new cron.CronJob("55 18 * * *", handleOrderReminder);
 
 scheduler1.start(); //calling alert 1 to place order
 scheduler2.start(); //calling alert 2 to place order
