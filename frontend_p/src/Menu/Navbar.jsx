@@ -5,8 +5,8 @@ import "./Sidenav.css";
 export const Navbar = () => {
   return (
     <nav className="nav-men mee fixed-top">
-      <div className="container-fluid align-items-center justify-content-center d-flex">
-        <ul className="w-50 justify-content-between d-flex align-items-center pt-3">
+      <div className="container-fluid align-items-center justify-content-center d-sm-flex d-md-flex">
+        <ul className="w-50 justify-content-between d-sm-flex d-md-flex align-items-center pt-3">
           <li className="navitems_2">
             <Link to="/products" className="Link ">
               My Order
