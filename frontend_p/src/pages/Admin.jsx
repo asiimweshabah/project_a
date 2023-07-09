@@ -10,15 +10,16 @@ function Admin() {
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [userActivationStatus, setUserActivationStatus] = useState({});
-
+  useEffect(() => {
+    fetchUsers();
+  });
   useEffect(() => {
     // Retrieve user activation status from local storage
     const storedActivationStatus = localStorage.getItem("userActivationStatus");
     if (storedActivationStatus) {
       setUserActivationStatus(JSON.parse(storedActivationStatus));
     }
-    filterUsers();
-    fetchUsers();
+    // filterUsers();
   }, [selectedCompany, selectedUserType]);
 
   async function fetchUsers() {

@@ -7,7 +7,7 @@ const Setpassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
