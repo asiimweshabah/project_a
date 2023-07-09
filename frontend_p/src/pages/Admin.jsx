@@ -25,7 +25,7 @@ function Admin() {
   async function fetchUsers() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3006/users/allUsers", {
+      const response = await axios.get("https://asiimweshabah.github.io/frontend_p/users/allUsers", {
         headers: {
           Authorization: "Bearer " + token,
         },

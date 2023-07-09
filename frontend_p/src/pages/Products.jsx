@@ -36,7 +36,7 @@ export default function Products() {
   async function fetchData() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:3006/products`, {
+      const response = await axios.get(`https://asiimweshabah.github.io/frontend_p/products`, {
         headers: {
           Authorization: "Bearer " + token,
         },

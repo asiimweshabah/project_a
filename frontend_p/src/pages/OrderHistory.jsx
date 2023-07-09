@@ -31,7 +31,7 @@ export default function Orders() {
       const result = window.confirm("Confirm clearing all order history?");
       const token = localStorage.getItem("token");
       if (result) {
-        await axios.delete(`http://localhost:3006/orders/deleteOrders`, {
+        await axios.delete(`https://asiimweshabah.github.io/frontend_p/orders/deleteOrders`, {
           headers: {
             Authorization: "Bearer " + token,
           },

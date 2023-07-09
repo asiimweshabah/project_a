@@ -13,7 +13,7 @@ export default function Orders() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3006/orders/myOrders/${userId}`,
+        `https://asiimweshabah.github.io/frontend_p/orders/myOrders/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + token,
