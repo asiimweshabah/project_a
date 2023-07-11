@@ -13,7 +13,7 @@ export default function Orders() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://asiimweshabah.github.io/frontend_p/orders/myOrders/${userId}`,
+        `http://localhost:3006/orders/myOrders/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -29,7 +29,7 @@ export default function Orders() {
   //   (sum, order) => sum + parseInt(order.Amount),
   //   0
   // );
-  
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -51,7 +51,7 @@ export default function Orders() {
                   <th className="text-white">Quantity</th>
                   <th className="text-white">Date</th>
                   <th className="actions text-white">Amount</th>
-                  <th className="actions text-white">Total Amount</th>
+                  {/* <th className="actions text-white">Total Amount</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -65,7 +65,7 @@ export default function Orders() {
                         {formatDate(order.order_date)}
                       </td>
                       <td className="ordr-with">{order.Amount}</td>
-                      <td className="ordr-with">{order.total_amount}</td>
+                      {/* <td className="ordr-with">{order.total_amount}</td> */}
                     </tr>
                   ))
                 ) : (

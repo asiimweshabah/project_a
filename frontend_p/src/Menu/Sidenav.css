@@ -15,6 +15,7 @@ body {
   left: -100%;
   transition: 850ms;
 }
+
 .mee {
   background-color: #e8e6ff;
 }
@@ -54,7 +55,6 @@ body {
 }
 .navitems_2 {
   list-style: none;
-  
 }
 
 .Link {
@@ -64,6 +64,9 @@ body {
   margin-top: 3px;
 }
 
+.form-title-bg {
+  background-color: #e8e6ff;
+}
 /* li:hover {
   background-color: #c590e6;
   width: 100%;

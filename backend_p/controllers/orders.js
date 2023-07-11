@@ -61,12 +61,48 @@ module.exports = {
       res.status(500).send("Error placing order");
     }
   },
+
   async getAllOrders(req, res, next) {
     try {
-      const getAllOrdersQuery = `SELECT * FROM orders`;
+      let getAllOrdersQuery = `
+        SELECT
+          orders.users_Id,
+          users.Username,
+          GROUP_CONCAT(
+            CONCAT(
+              orders.Product,
+            
+              orders.Quantity,
+              
+              orders.Price,
+              
+              orders.Amount
+            )
+          ) AS Orders,
+          orders.total_amount,
+          orders.debt,
+          orders.order_date
+        FROM orders
+        LEFT JOIN users ON orders.users_Id = users.users_Id
+        GROUP BY orders.users_Id, users.Username
+      `;
+
       const orders = await executeQuery(getAllOrdersQuery);
 
-      res.status(200).json(orders);
+      if (orders && orders.length > 0) {
+        res.status(200).json(
+          orders.map((order) => ({
+            users_Id: order.users_Id,
+            Username: order.Username,
+            orders: order.Orders ? order.Orders.split(",") : [],
+            total_amount: order.total_amount,
+            debt: order.debt,
+            order_date: order.order_date,
+          }))
+        );
+      } else {
+        res.status(200).json([]);
+      }
     } catch (error) {
       console.error(error);
       res

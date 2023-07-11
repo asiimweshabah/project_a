@@ -44,10 +44,7 @@ export default function User() {
         products: selectedProducts,
         quantities: selectedQuantities,
       };
-      await axios.post(
-        `https://asiimweshabah.github.io/frontend_p/products/placeOrder`,
-        orderData
-      );
+      await axios.post(`http://localhost:3006/products/placeOrder`, orderData);
       setSelectedProducts([]);
       setSelectedQuantities({});
       fetchData();

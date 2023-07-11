@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+
 import axios from "axios";
+import { Modal } from "react-bootstrap";
+import SignUp from "../Components/SignUp";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -10,6 +12,8 @@ function Admin() {
   const [selectedUserType, setSelectedUserType] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [userActivationStatus, setUserActivationStatus] = useState({});
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+
   useEffect(() => {
     fetchUsers();
   });
@@ -25,7 +29,7 @@ function Admin() {
   async function fetchUsers() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://asiimweshabah.github.io/frontend_p/users/allUsers", {
+      const response = await axios.get("http://localhost:3006/users/allUsers", {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -225,9 +229,15 @@ function Admin() {
             </table>
             <div className="my-3 justify-content-between d-flex">
               <div>
-                <Link to="/register">
+                {/* <Link to="/register">
                   <button className="bg_btn btn btn-success">Add User</button>
-                </Link>
+                </Link> */}
+                <button
+                  onClick={() => setShowSignUpModal(true)}
+                  className="bg_btn btn btn-success"
+                >
+                  Add User
+                </button>
               </div>
             </div>
             <div className="pagination justify-content-end">
@@ -247,6 +257,21 @@ function Admin() {
             </div>
           </div>
         </div>
+        {showSignUpModal && (
+          <Modal
+            centered
+            // style={{ height: "50%" }}
+            show={showSignUpModal}
+            onHide={() => setShowSignUpModal(false)}
+          >
+            <Modal.Header closeButton>
+              {/* <Modal.Title>Add User</Modal.Title> */}
+            </Modal.Header>
+            <Modal.Body>
+              <SignUp />
+            </Modal.Body>
+          </Modal>
+        )}
       </div>
     </div>
   );

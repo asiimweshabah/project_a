@@ -1,32 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
+import axios from "axios";
+import { Modal } from "react-bootstrap";
+import AddProduct from "./AddProduct";
 export default function Products() {
   const [orders, setOrders] = useState([]);
   const [userType, setUserType] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [isProductSelected, setIsProductSelected] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-
-  // function setAlarmReminder(alarmTime, callback) {
-  //   const currentTime = new Date();
-  //   const timeDiff = alarmTime.getTime() - currentTime.getTime();
-
-  //   if (timeDiff > 0) {
-  //     setTimeout(callback, timeDiff);
-  //   }
-  // }
-
-  // // Example usage
-  // const alarmTime = new Date();
-  // alarmTime.setHours(9); // Set the alarm time to 9:00 AM
-
-  // function remindToPlaceOrder() {
-  //   console.log("Reminder: Place your order!");
-  // }
-
-  // setAlarmReminder(alarmTime, remindToPlaceOrder);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -36,7 +19,7 @@ export default function Products() {
   async function fetchData() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`https://asiimweshabah.github.io/frontend_p/products`, {
+      const response = await axios.get(`http://localhost:3006/products`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -173,7 +156,9 @@ export default function Products() {
       console.error("Error placing order:", error);
     }
   };
-
+  const handleCancelModal = () => {
+    setShowSignUpModal(false);
+  };
   return (
     <div>
       <div className="order-container">
@@ -256,17 +241,22 @@ export default function Products() {
             <div className="my-3 justify-content-between d-flex">
               <div>
                 {userType === "normal" ? (
-                  <button className="bg_btn btn btn-success" disabled>
+                  <button
+                    onClick={() => setShowSignUpModal(true)}
+                    className="bg_btn btn btn-success"
+                    disabled
+                  >
                     Add Product
                   </button>
                 ) : (
                   <div className="d-flex justify-content">
                     <div>
-                      <Link to="/addproduct">
-                        <button className="bg_btn btn btn-success">
-                          Add Product
-                        </button>
-                      </Link>
+                      <button
+                        onClick={() => setShowSignUpModal(true)}
+                        className="bg_btn btn btn-success"
+                      >
+                        Add Product
+                      </button>
                     </div>
                   </div>
                 )}
@@ -282,6 +272,20 @@ export default function Products() {
               </div>
             </div>
           </div>
+          {showSignUpModal && (
+            <Modal
+              centered
+              show={showSignUpModal}
+              onHide={() => setShowSignUpModal(false)}
+            >
+              <Modal.Header closeButton>
+                {/* <Modal.Title>Add User</Modal.Title> */}
+              </Modal.Header>
+              <Modal.Body>
+                <AddProduct onClose={handleCancelModal} />
+              </Modal.Body>
+            </Modal>
+          )}
         </div>
       </div>
     </div>

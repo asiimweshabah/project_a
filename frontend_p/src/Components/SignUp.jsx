@@ -79,91 +79,85 @@ export default function SignUp() {
         });
     }
   };
-  
-  return (
-    <div className="container form_container d-flex align-items-center justify-content-center w-100">
-      <div className="form-grid w-100">
-        <form className="form" action="">
-          <div className="my-3">
-            <label htmlFor="username">
-              Username
-              <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-                *
-              </span>
-            </label>
-            <input
-              required
-              placeholder="username"
-              className="form-control w-50"
-              type="text"
-              name={"username"}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <div className="my-3">
-            <label htmlFor="email">
-              Email
-              <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-                *
-              </span>
-            </label>
-            <input
-              required
-              placeholder="Email"
-              className="form-control w-50"
-              type={"email"}
-              name={"email"}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="my-3">
-            <label htmlFor="company">
-              Company
-              <span style={{ fontSize: "20px" }} className="text-danger mx-1">
-                *
-              </span>
-            </label>
-            <select
-              required
-              className="form-control w-50"
-              name="company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            >
-              <option value="">Select Company</option>
-              <option value="Odysseytech">Odysseytech</option>
-              <option value="Uganda Digital">Uganda Digital</option>
-              <option value="UPTI">UPTI</option>
-            </select>
-          </div>
-          <div className="my-3">
-            <label htmlFor="userType">User Type:</label>
-            <select
-              className="form-control w-50"
-              name="userType"
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-            >
-              <option value="">Select Usertype</option>
-              <option value="normal">Normal User</option>
-              <option value="admin">Admin</option>
-              <option value="superadmin">Super Admin</option>
-            </select>
-          </div>
 
-          <input
-            onClick={signup}
-            type="submit"
-            value="Send Verification Code"
-            name="signup"
-            className="submit btn w-50 btn-danger mt-4 text-center"
-            disabled={isSubmitting}
-          />
-          <h1 style={{ fontSize: "15px", marginTop: "20px" }}>
-            {registerStatus}
-          </h1>
-        </form>
+  return (
+    <form className="form w-100 px-5" action="">
+      <div className="my-3">
+        <label htmlFor="username">
+          Username
+          <span style={{ fontSize: "20px" }} className="text-danger mx-1">
+            *
+          </span>
+        </label>
+        <input
+          required
+          placeholder="username"
+          className="form-control w-100"
+          type="text"
+          name={"username"}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </div>
-    </div>
+      <div className="my-3">
+        <label htmlFor="email">
+          Email
+          <span style={{ fontSize: "20px" }} className="text-danger mx-1">
+            *
+          </span>
+        </label>
+        <input
+          required
+          placeholder="Email"
+          className="form-control w-100"
+          type={"email"}
+          name={"email"}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="my-3">
+        <label htmlFor="company">
+          Company
+          <span style={{ fontSize: "20px" }} className="text-danger mx-1">
+            *
+          </span>
+        </label>
+        <select
+          required
+          className="form-control w-100"
+          name="company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        >
+          <option value="">Select Company</option>
+          <option value="Odysseytech">Odysseytech</option>
+          <option value="Uganda Digital">Uganda Digital</option>
+          <option value="UPTI">UPTI</option>
+        </select>
+      </div>
+      <div className="my-3">
+        <label htmlFor="userType">User Type:</label>
+        <select
+          className="form-control w-100"
+          name="userType"
+          value={userType}
+          onChange={(e) => setUserType(e.target.value)}
+        >
+          <option value="">Select Usertype</option>
+          <option value="normal">Normal User</option>
+          <option value="admin">Admin</option>
+          <option value="superadmin">Super Admin</option>
+        </select>
+      </div>
+
+      <input
+        onClick={signup}
+        type="submit"
+        value="Send Verification Code"
+        name="signup"
+        className="submit btn w-100 btn-danger mt-4 text-center"
+        disabled={isSubmitting}
+      />
+      <h1 style={{ fontSize: "15px", marginTop: "20px" }}>{registerStatus}</h1>
+    </form>
   );
 }

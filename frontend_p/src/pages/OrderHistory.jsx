@@ -31,7 +31,7 @@ export default function Orders() {
       const result = window.confirm("Confirm clearing all order history?");
       const token = localStorage.getItem("token");
       if (result) {
-        await axios.delete(`https://asiimweshabah.github.io/frontend_p/orders/deleteOrders`, {
+        await axios.delete(`http://localhost:3006/orders/deleteOrders`, {
           headers: {
             Authorization: "Bearer " + token,
           },
@@ -108,6 +108,8 @@ export default function Orders() {
                   <th className="text-white">Names</th>
                   <th className="text-white">Product</th>
                   <th className="text-white">Quantity</th>
+                  <th className="text-white">Price</th>
+
                   <th className="text-white">Amount</th>
                   <th className="text-white">Total Amount</th>
                   <th className="text-white">Debt</th>
@@ -115,27 +117,23 @@ export default function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(currentOrders) && currentOrders.length > 0 ? (
-                  currentOrders.map((order) => (
-                    <tr key={order.order_Id}>
-                      <td className="T-width">{order.Username}</td>
-                      <td className="T-width">{order.Product}</td>
-                      <td className="T-width">{order.Quantity}</td>
-                      <td className="T-width">{order.Amount}</td>
-                      <td className="T-width">{order.total_amount}</td>
-                      <td className="T-width">{order.debt}</td>
-                      <td className="T-width">
-                        {formatDate(order.order_date)}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7">
-                      No order history available for all users
+                {currentOrders.map((order) => (
+                  <tr key={order.users_Id}>
+                    <td>{order.Username}</td>
+
+                    <td>
+                      {order.orders.map((orderItem, index) => (
+                        <div key={index} className="col-md-2">
+                          {orderItem}
+                        </div>
+                      ))}
                     </td>
+
+                    <td>{order.total_amount}</td>
+                    <td>{order.debt}</td>
+                    <td>{formatDate(order.order_date)}</td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
             <div className="my-3 justify-content-between d-flex">

@@ -13,12 +13,13 @@ import {
 import { Modal } from "react-bootstrap";
 import { IconContext } from "react-icons";
 import { BsFillPeopleFill } from "react-icons/bs";
-
+import SignUp from "../Components/SignUp";
 const SideMenu = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState("");
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
 
   useEffect(() => {
     const checkLoggedIn = () => {
@@ -112,10 +113,12 @@ const SideMenu = () => {
                       Users
                     </Link>
                   </li>
-                  <li className="navbar-item">
+                  <li
+                    onClick={() => setShowSignUpModal(true)}
+                    className="navbar-item"
+                  >
                     <Link
-                      to="/register"
-                      onClick={toggleModal}
+                      onClick={showModal}
                       className="Link  d-flex align-items-center"
                     >
                       <MdAccountCircle
@@ -167,28 +170,40 @@ const SideMenu = () => {
               </Link>
             </div>
           </div>
-          <div>
-            <Modal show={showModal} onHide={toggleModal} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirm Logging out</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <p>Are you sure you want to log out?</p>
-              </Modal.Body>
-              <Modal.Footer>
-                <button className="btn bg_btn text-white" onClick={toggleModal}>
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-danger btn-primary"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </Modal.Footer>
-            </Modal>
-          </div>
+          <Modal show={showModal} onHide={toggleModal} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm Logging out</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>Are you sure you want to log out?</p>
+            </Modal.Body>
+            <Modal.Footer>
+              <button className="btn bg_btn text-white" onClick={toggleModal}>
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger btn-primary"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </Modal.Footer>
+          </Modal>
+          <div></div>
         </div>
+        {showSignUpModal && (
+          <Modal
+            centered
+            // style={{ height: "50%" }}
+            show={showSignUpModal}
+            onHide={() => setShowSignUpModal(false)}
+          >
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body>
+              <SignUp />
+            </Modal.Body>
+          </Modal>
+        )}
       </div>
     </div>
   );
