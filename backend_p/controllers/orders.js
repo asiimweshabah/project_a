@@ -70,12 +70,9 @@ module.exports = {
           users.Username,
           GROUP_CONCAT(
             CONCAT(
-              orders.Product,
-            
-              orders.Quantity,
-              
-              orders.Price,
-              
+              orders.Product, 
+              orders.Quantity,        
+              orders.Price,             
               orders.Amount
             )
           ) AS Orders,
