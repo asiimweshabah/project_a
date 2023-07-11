@@ -49,7 +49,7 @@ export default function SignUp() {
       // Send verification code to the user's email
       axios
         .post(
-          `http://localhost:3006/users/register`,
+          `https://odysseytechbreaksystem.netlify.app/users/register`,
           {
             username: username,
             email: email,

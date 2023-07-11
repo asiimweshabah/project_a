@@ -28,7 +28,7 @@
 
 //     console.log(searchParams);
 //     axios
-//       .post(`http://localhost:3006/users/resetPassword`, {
+//       .post(`https://odysseytechbreaksystem.netlify.app/users/resetPassword`, {
 //         email: `${searchParams.get("email")}`,
 //         password,
 //       })

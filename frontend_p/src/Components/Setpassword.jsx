@@ -27,7 +27,7 @@ const Setpassword = () => {
 
     console.log(searchParams);
     axios
-      .post(`http://localhost:3006/users/setpassword`, {
+      .post(`https://odysseytechbreaksystem.netlify.app/users/setpassword`, {
         email: `${searchParams.get("email")}`,
         password,
       })

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Orders() {
@@ -13,7 +12,7 @@ export default function Orders() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3006/orders/myOrders/${userId}`,
+        `https://odysseytechbreaksystem.netlify.app/orders/myOrders/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -49,7 +48,7 @@ export default function Orders() {
                   <th className="text-white">Product</th>
                   <th className="text-white">Price</th>
                   <th className="text-white">Quantity</th>
-                  <th className="text-white">Date</th>
+                  <th className="text-white">Order Date</th>
                   <th className="actions text-white">Amount</th>
                   {/* <th className="actions text-white">Total Amount</th> */}
                 </tr>
@@ -73,14 +72,6 @@ export default function Orders() {
                     <td colSpan="5">No recent orders available</td>
                   </tr>
                 )}
-                {/* <tr>
-                  <td colSpan="4" className="ordr-with">
-                    <b> Total Amount</b>
-                  </td>
-                  <td className="ordr-with">
-                    <b> {totalAmount}</b>
-                  </td>
-                </tr> */}
               </tbody>
             </table>
           </div>

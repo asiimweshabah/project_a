@@ -20,7 +20,6 @@ function App() {
         <Route path="/" element={<Outlets />}>
           <Route path="/" exact element={<Home />} />
         </Route>
-
         {/* <Route path="/resetPassword" exact element={<Newpassword />} /> */}
         <Route path="/setpassword" exact element={<Setpassword />} />
         <Route path="/login" exact element={<SignIn />} />
