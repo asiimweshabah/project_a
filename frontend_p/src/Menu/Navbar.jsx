@@ -37,7 +37,7 @@ export const Navbar = () => {
           </li>
 
           <li onClick={() => setShowSignUpModal(true)} className="navitems_2">
-            Add User
+            <Link className="Link"> Add User</Link>
           </li>
         </ul>
       </div>

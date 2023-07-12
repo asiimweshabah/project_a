@@ -45,7 +45,9 @@ body {
     color: #5f2781;
   }
 }
-
+.Modal {
+  background-color: #5f2781;
+}
 .navbar-item {
   width: 100%;
   height: 80px;

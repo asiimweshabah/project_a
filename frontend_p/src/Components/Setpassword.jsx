@@ -27,13 +27,13 @@ const Setpassword = () => {
 
     console.log(searchParams);
     axios
-      .post(`https://odysseytechbreaksystem.netlify.app/users/setpassword`, {
+      .post(`http://localhost:3006/users/setpassword`, {
         email: `${searchParams.get("email")}`,
         password,
       })
       .then((response) => {
         setMessage(response.data.message);
-        navigate("/login");
+        navigate("/", { state: { showSignInModal: false } });
       })
       .catch((error) => {
         setMessage(error.response.data.error);

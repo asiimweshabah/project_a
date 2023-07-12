@@ -12,9 +12,7 @@ export default function User() {
 
   async function fetchData() {
     try {
-      const response = await axios.get(
-        `https://odysseytechbreaksystem.netlify.app/products`
-      );
+      const response = await axios.get(`http://localhost:3006/products`);
       setOrders(response.data);
     } catch (error) {
       console.error(error);
@@ -46,10 +44,7 @@ export default function User() {
         products: selectedProducts,
         quantities: selectedQuantities,
       };
-      await axios.post(
-        `https://odysseytechbreaksystem.netlify.app/products/placeOrder`,
-        orderData
-      );
+      await axios.post(`http://localhost:3006/products/placeOrder`, orderData);
       setSelectedProducts([]);
       setSelectedQuantities({});
       fetchData();

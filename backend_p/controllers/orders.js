@@ -6,6 +6,15 @@ module.exports = {
       const { Username, users_Id } = req.user;
       let total = 0;
       let debt = 0;
+
+      // Check if the user has already placed an order
+      const existingOrderQuery = `SELECT * FROM orders WHERE users_Id = ?`;
+      const existingOrder = await executeQuery(existingOrderQuery, [users_Id]);
+
+      if (existingOrder && existingOrder.length > 0) {
+        throw new Error("User has already placed an order.");
+      }
+
       // Validate user existence
       const verifyUserQuery = `SELECT * FROM users WHERE users_Id = ?`;
       const userExists = await executeQuery(verifyUserQuery, [users_Id]);
@@ -26,11 +35,11 @@ module.exports = {
 
       // Calculate the total amount as the sum of the Amount column
       const total_amount = Object.values(selectedProductData).reduce(
-        (sum, product) => sum + product.Amount,
+        (sum, product) => sum + parseInt(product.Amount),
         0
       );
 
-      // Inserting orders into the orders table
+      // Inserting order into the orders table
       const insertOrderQuery = `
         INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, total_amount, order_date, debt)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -41,6 +50,31 @@ module.exports = {
         const productData = selectedProductData[productId];
         const { Product, Price, Quantity, Amount } = productData;
 
+        // Check if the user has already placed an order today
+        const currentDate = new Date();
+        const startOfDay = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate()
+        );
+        const endOfDay = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate() + 1
+        );
+
+        const existingOrderQuery = `
+      SELECT * FROM orders
+      WHERE users_Id = ? AND order_date >= ? AND order_date < ?`;
+        const existingOrder = await executeQuery(existingOrderQuery, [
+          users_Id,
+          startOfDay,
+          endOfDay,
+        ]);
+
+        if (existingOrder && existingOrder.length > 0) {
+          throw new Error("User has already placed an order today.");
+        }
         await executeQuery(insertOrderQuery, [
           users_Id,
           Username,
@@ -70,10 +104,9 @@ module.exports = {
           users.Username,
           GROUP_CONCAT(
             CONCAT(
-              orders.Product, 
-              orders.Quantity,        
-              orders.Price,             
-              orders.Amount
+              orders.Product , 
+              '(', orders.Quantity, ')-',                       
+               orders.Amount 
             )
           ) AS Orders,
           orders.total_amount,

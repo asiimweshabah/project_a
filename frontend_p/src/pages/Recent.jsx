@@ -12,7 +12,7 @@ export default function Orders() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://odysseytechbreaksystem.netlify.app/orders/myOrders/${userId}`,
+        `http://localhost:3006/orders/myOrders/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -50,7 +50,6 @@ export default function Orders() {
                   <th className="text-white">Quantity</th>
                   <th className="text-white">Order Date</th>
                   <th className="actions text-white">Amount</th>
-                  {/* <th className="actions text-white">Total Amount</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -64,7 +63,6 @@ export default function Orders() {
                         {formatDate(order.order_date)}
                       </td>
                       <td className="ordr-with">{order.Amount}</td>
-                      {/* <td className="ordr-with">{order.total_amount}</td> */}
                     </tr>
                   ))
                 ) : (
@@ -74,6 +72,9 @@ export default function Orders() {
                 )}
               </tbody>
             </table>
+            <div className="d-flex justify-content-end">
+              <button className="btn-danger btn-sm btn">Delete Order</button>
+            </div>
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ async function sendVerificationMessage(email) {
       subject: "Set password to login",
       html: `<body>
         <h1>Create an account</h1>
-        <a href="https://odysseytechbreaksystem.netlify.app/setpassword?email=${email}">
+        <a href="http://localhost:3000/setpassword?email=${email}">
           <button style="background-color: #5f2781; border-radius: 10px; border: #5f2781; color: white; padding: 10px 20px; cursor: pointer;">Create Account</button>
         </a>
       </body>`,
@@ -57,7 +57,7 @@ async function sendOrderPlacementAlert(userId, orderId, username) {
         <body>
           <h1>Make your breakfast order</h1>
           <p>You have an order pending. Please place the order before it expires.</p>
-          <a href="https://odysseytechbreaksystem.netlify.app">
+          <a href="http://localhost:3000">
           <button style="background-color: #5f2781; border-radius: 10px; border: #5f2781; color: white; padding: 10px 20px; cursor: pointer;">Make Order</button>
         </a>
         </body>
@@ -95,8 +95,8 @@ async function handleOrderReminder() {
   }
 }
 
-const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder);
-const scheduler2 = new cron.CronJob("55 18 * * *", handleOrderReminder);
+const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder); // 8am
+const scheduler2 = new cron.CronJob("0 18 * * *", handleOrderReminder); //6pm
 
 scheduler1.start(); //calling alert 1 to place order
 scheduler2.start(); //calling alert 2 to place order

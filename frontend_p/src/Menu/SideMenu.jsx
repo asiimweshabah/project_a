@@ -14,12 +14,14 @@ import { Modal } from "react-bootstrap";
 import { IconContext } from "react-icons";
 import { BsFillPeopleFill } from "react-icons/bs";
 import SignUp from "../Components/SignUp";
+import Signin from "../Components/SignIn";
 const SideMenu = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState("");
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   useEffect(() => {
     const checkLoggedIn = () => {
@@ -38,6 +40,9 @@ const SideMenu = () => {
     localStorage.clear();
     setIsLoggedIn(false);
     toggleModal();
+  };
+  const handleOpenSignInModal = () => {
+    setShowSignInModal(true);
   };
 
   return (
@@ -143,7 +148,8 @@ const SideMenu = () => {
                       </Link>
                     ) : (
                       <Link
-                        to="/login"
+                        onClick={handleOpenSignInModal}
+                        // to="/login"
                         className="Link  d-flex align-items-center"
                       >
                         <RiLoginCircleFill
@@ -189,7 +195,22 @@ const SideMenu = () => {
               </button>
             </Modal.Footer>
           </Modal>
-          <div></div>
+          <div>
+            {showSignInModal && (
+              <Modal
+                centered
+                show={showSignInModal}
+                onHide={() => setShowSignInModal(false)}
+              >
+                <Modal.Header closeButton>
+                  {/* <Modal.Title>Login</Modal.Title> */}
+                </Modal.Header>
+                <Modal.Body>
+                  <Signin />
+                </Modal.Body>
+              </Modal>
+            )}
+          </div>
         </div>
         {showSignUpModal && (
           <Modal
