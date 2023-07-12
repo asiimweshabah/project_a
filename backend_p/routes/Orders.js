@@ -1,4 +1,4 @@
-var express = require("express");
+const express = require("express");
 const app = express.Router();
 const ordersController = require("../controllers/orders");
 const userAuther = require("../middlewares/user-auth");
@@ -8,10 +8,8 @@ app.get("/", [userAuther, checkAdmin], ordersController.getAllOrders);
 
 app.get("/myOrders/:id", [userAuther], ordersController.getOrdersByUser);
 
-// adding product by admin
 app.post("/placeOrder", [userAuther], ordersController.placeOrder);
 
-//delete an order
 app.delete(
   "/deleteOrders",
   [userAuther, checkAdmin],
@@ -23,8 +21,5 @@ app.delete(
   [userAuther],
   ordersController.deleteUserOrder
 );
-
-// editorde
-// app.patch("/editOrder/:id", ordersController.editOrder);
 
 module.exports = app;

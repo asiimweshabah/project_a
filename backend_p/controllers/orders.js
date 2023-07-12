@@ -1,8 +1,9 @@
 const executeQuery = require("../db/execute-query");
+
 module.exports = {
   async placeOrder(req, res, next) {
     try {
-      const { selectedProductIds, selectedProductData } = req.body;
+      const { selectedProductData } = req.body;
       const { Username, users_Id } = req.user;
       let total = 0;
       let debt = 0;
@@ -44,7 +45,6 @@ module.exports = {
         INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, total_amount, order_date, debt)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      const currentDate = new Date();
 
       for (const productId in selectedProductData) {
         const productData = selectedProductData[productId];
