@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon js, mjs, json"
+    "dev": "nodemon js, mjs, json",
+    "build": "react-scripts build"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
