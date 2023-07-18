@@ -38,8 +38,10 @@ export default function Signin() {
         if (response.data.message === "User does not exist") {
           setLoginStatus("User does not exist");
         } else if (response.data.message && response.data.token) {
+          console.log("response.data.user", response.data.user);
           localStorage.setItem("token", response.data.token);
-
+          localStorage.setItem("UserType", response.data.user.UserType);
+          localStorage.setItem("Email", response.data.user.Email);
           navigate("/products");
         } else {
           setLoginStatus(response.data.error);

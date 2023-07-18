@@ -1,5 +1,5 @@
 const mysql2 = require("mysql2/promise");
-
+require("dotenv").config();
 module.exports = async (createDb = false) => {
   let connection = mysql2.createConnection({
     port: Number(process.env.mysqlport),

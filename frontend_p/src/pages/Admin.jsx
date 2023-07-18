@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import SignUp from "../Components/SignUp";
+import { format } from "date-fns";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -16,7 +16,8 @@ function Admin() {
 
   useEffect(() => {
     fetchUsers();
-  });
+  }, []);
+
   useEffect(() => {
     // Retrieve user activation status from local storage
     const storedActivationStatus = localStorage.getItem("userActivationStatus");
@@ -29,7 +30,7 @@ function Admin() {
   async function fetchUsers() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3006/users/allUsers", {
+      const response = await axios.get(`http://localhost:3006/users/allUsers`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -189,7 +190,9 @@ function Admin() {
                     <td>{user.Company}</td>
                     <td>{user.UserType}</td>
                     <td>{user.Email}</td>
-                    <td>{user.dateOfJoining.split("T")[0]}</td>
+                    <td>
+                      {format(new Date(user.dateOfJoining), "MMMM d, yyyy")}
+                    </td>
                     <td className="w-100 d-flex justify-content-evenly">
                       <button
                         className="bg_btn btn-sm btn btn-success"
@@ -204,9 +207,9 @@ function Admin() {
                               onClick={() =>
                                 toggleUserActivation(user.users_Id)
                               }
-                              className="btn btn-sm btn-danger w-100"
+                              className="btn-width btn bg_btn btn-sm text-white w-100"
                             >
-                              Deactivate User
+                              Activate User
                             </button>
                           </div>
                         ) : (
@@ -215,9 +218,9 @@ function Admin() {
                               onClick={() =>
                                 toggleUserActivation(user.users_Id)
                               }
-                              className="btn-width btn bg_btn btn-sm text-white w-100"
+                              className="btn btn-sm btn-danger w-100"
                             >
-                              Activate User
+                              Deactivate User
                             </button>
                           </div>
                         )}
@@ -260,13 +263,10 @@ function Admin() {
         {showSignUpModal && (
           <Modal
             centered
-            // style={{ height: "50%" }}
             show={showSignUpModal}
             onHide={() => setShowSignUpModal(false)}
           >
-            <Modal.Header closeButton>
-              {/* <Modal.Title>Add User</Modal.Title> */}
-            </Modal.Header>
+            <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
               <SignUp />
             </Modal.Body>

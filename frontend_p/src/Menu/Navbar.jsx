@@ -1,46 +1,91 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Sidenav.css";
 import { Modal } from "react-bootstrap";
 import SignUp from "../Components/SignUp";
+import { CiMenuKebab } from "react-icons/ci";
 export const Navbar = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [isNavOpen, setNavOpen] = useState(false);
+  const userType = localStorage.getItem("UserType");
+
+  const toggleSignUpModal = () => {
+    setShowSignUpModal(!showSignUpModal);
+  };
+
+  const toggleNav = () => {
+    setNavOpen(!isNavOpen);
+  };
 
   return (
-    <nav className="nav-men mee fixed-top px-4">
-      <div className="container-fluid align-items-center justify-content-between d-sm-flex d-md-flex">
-        <h4 id="logo">Odyssey</h4>
+    <div>
+      <nav className="fixed-top navbar px-4 navbar-expand-lg navbar-light bg-light">
+        <Link to="/" className="Link">
+          <h5 id="logo">OdysseyBreakSystem</h5>
+        </Link>
+        <button className="navbar-toggler" type="button" onClick={toggleNav}>
+          <CiMenuKebab />
+        </button>
+        <div
+          className={`justify-content-end collapse navbar-collapse ${
+            isNavOpen ? "show" : ""
+          }`}
+        >
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link
+                to="/products"
+                className="nav-link Link"
+                onClick={toggleNav}
+              >
+                My Order
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/recent" className="nav-link Link" onClick={toggleNav}>
+                Recent Orders
+              </Link>
+            </li>
 
-        <ul className=" justify-content-between d-sm-flex d-md-flex align-items-center pt-3">
-          <li className="navitems_2">
-            <Link to="/products" className="Link ">
-              My Order
-            </Link>
-          </li>
+            {userType && userType !== "normal" && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    to="/admin_orderhistory"
+                    className="nav-link Link"
+                    onClick={toggleNav}
+                  >
+                    Order History
+                  </Link>
+                </li>
 
-          <li className="navitems_2">
-            <Link to="/recent" className="Link ">
-              Recent Orders
-            </Link>
-          </li>
+                <li className="nav-item">
+                  <Link
+                    to="/admin_users"
+                    className="nav-link Link"
+                    onClick={toggleNav}
+                  >
+                    Users
+                  </Link>
+                </li>
 
-          <li className="navitems_2">
-            <Link to="/admin_orderhistory" className="Link">
-              Order History
-            </Link>
-          </li>
+                <li className="nav-item">
+                  <Link
+                    to="#"
+                    className="nav-link Link"
+                    onClick={() => {
+                      toggleSignUpModal();
+                      toggleNav();
+                    }}
+                  >
+                    Add User
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </nav>
 
-          <li className="navitems_2">
-            <Link to="/admin_users" className="Link">
-              Users
-            </Link>
-          </li>
-
-          <li onClick={() => setShowSignUpModal(true)} className="navitems_2">
-            <Link className="Link"> Add User</Link>
-          </li>
-        </ul>
-      </div>
       {showSignUpModal && (
         <Modal
           centered
@@ -53,7 +98,7 @@ export const Navbar = () => {
           </Modal.Body>
         </Modal>
       )}
-    </nav>
+    </div>
   );
 };
 

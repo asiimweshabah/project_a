@@ -50,13 +50,16 @@ export default function AddProduct({ onClose }) {
         }
       );
       onClose();
+      window.alert("Product added successfully!");
     } catch (error) {
       console.error(error);
     }
   }
+
   const handleCancel = () => {
     onClose();
   };
+
   return (
     <form className="form w-100 px-5" onSubmit={submit} action="">
       <div className="col-12 m-2">

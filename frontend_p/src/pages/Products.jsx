@@ -3,17 +3,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import AddProduct from "./AddProduct";
+
 export default function Products() {
   const [orders, setOrders] = useState([]);
-  const [userType, setUserType] = useState("");
+
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [isProductSelected, setIsProductSelected] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
 
+  const userType = localStorage.getItem("UserType");
+
   useEffect(() => {
     fetchData();
-    setUserType();
   }, []);
 
   async function fetchData() {
@@ -34,7 +36,9 @@ export default function Products() {
           },
         }
       );
-      setUserType(userResponse.data.UserType);
+      if (userResponse) {
+        return userResponse;
+      }
     } catch (error) {
       console.error(error);
     }
@@ -56,6 +60,7 @@ export default function Products() {
           }
         );
         await fetchData();
+        window.alert("Order deleted successfully!");
       }
     } catch (error) {
       console.error(error);
@@ -137,8 +142,7 @@ export default function Products() {
           },
         }
       );
-      setIsOrderPlaced(true);
-      setSelectedProducts([]);
+
       // Update the products table with selected products and their quantities and amounts
       await axios.post(
         "http://localhost:3006/products/updateProducts",
@@ -152,10 +156,12 @@ export default function Products() {
 
       setIsOrderPlaced(true);
       setSelectedProducts([]);
+      window.alert("Order placed successfully!");
     } catch (error) {
       console.error("Error placing order:", error);
     }
   };
+
   const handleCancelModal = () => {
     setShowSignUpModal(false);
   };
@@ -167,9 +173,8 @@ export default function Products() {
             <table className="table table-striped table-bordered">
               <thead>
                 <tr className="text-white">
-                  {userType !== "normal" && (
-                    <th className="checkbox-column text-white">Product</th>
-                  )}
+                  <th className="checkbox-column text-white">Product</th>
+
                   <th className="text-white">Quantity</th>
                   <th className="text-white">Amount</th>
                   <th className="text-white">Total Amount</th>
@@ -183,17 +188,15 @@ export default function Products() {
                   orders.map((order) => (
                     <tr key={order.product_Id}>
                       <td className="ordr-with">
-                        <div className="d-flex align-items-center">
-                          {userType !== "normal" && (
-                            <input
-                              className="checkbox-column mx-1"
-                              type="checkbox"
-                              checked={order.selected || false}
-                              onChange={(event) =>
-                                handleCheckboxChange(event, order.product_Id)
-                              }
-                            />
-                          )}
+                        <div className=" mt-1">
+                          <input
+                            className="checkbox-column mx-1"
+                            type="checkbox"
+                            checked={order.selected || false}
+                            onChange={(event) =>
+                              handleCheckboxChange(event, order.product_Id)
+                            }
+                          />
                           {order.Product}
                         </div>
                       </td>
@@ -214,16 +217,21 @@ export default function Products() {
                         </select>
                       </td>
                       <td className="ordr-with">
-                        {order.Amount.toLocaleString()}
+                        <div className="mt-2">
+                          {order.Amount.toLocaleString()}
+                        </div>
                       </td>
-                      <td className="ordr-with">
-                        {order.total_amount.toLocaleString()}
+                      <td className="ordr-with ">
+                        <div className="mt-2">
+                          {order.total_amount.toLocaleString()}
+                        </div>
                       </td>
+
                       {userType !== "normal" && (
                         <td className="actions ordr-with">
                           <button
                             onClick={() => confirmDeleteOrder(order.product_Id)}
-                            className="btn btn-sm btn-danger"
+                            className="d-flex mt-1 align-items-center btn btn-sm btn-danger"
                           >
                             Delete Product
                           </button>
@@ -240,15 +248,7 @@ export default function Products() {
             </table>
             <div className="my-3 justify-content-between d-flex">
               <div>
-                {userType === "normal" ? (
-                  <button
-                    onClick={() => setShowSignUpModal(true)}
-                    className="bg_btn btn btn-success"
-                    disabled
-                  >
-                    Add Product
-                  </button>
-                ) : (
+                {userType !== "normal" && (
                   <div className="d-flex justify-content">
                     <div>
                       <button

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { format } from "date-fns";
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(10);
   const [username, setUsername] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  // const [totalAmount, setTotalAmount] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -74,15 +74,6 @@ export default function Orders() {
     setUsername(value);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return `${day}-${month}-${year}`;
-  };
-
   return (
     <div>
       <div className="order-container">
@@ -128,10 +119,11 @@ export default function Orders() {
                         </div>
                       ))}
                     </td>
-
                     <td>{order.total_amount}</td>
                     <td>{order.debt}</td>
-                    <td>{formatDate(order.order_date)}</td>
+                    <td>
+                      {format(new Date(order.order_date), "MMMM d, yyyy")}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -140,7 +132,7 @@ export default function Orders() {
               <div>
                 <button
                   onClick={() => deleteAllOrders()}
-                  className="bg_btn btn btn-success"
+                  className="btn btn-danger"
                 >
                   Clear OrderHistory
                 </button>

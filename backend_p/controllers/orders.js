@@ -4,89 +4,96 @@ module.exports = {
   async placeOrder(req, res, next) {
     try {
       const { selectedProductData } = req.body;
-      const { Username, users_Id } = req.user;
+      const { users_Id, Username } = req.user;
       let total = 0;
       let debt = 0;
 
-      // Check if the user has already placed an order
-      const existingOrderQuery = `SELECT * FROM orders WHERE users_Id = ?`;
-      const existingOrder = await executeQuery(existingOrderQuery, [users_Id]);
-
-      if (existingOrder && existingOrder.length > 0) {
-        throw new Error("User has already placed an order.");
-      }
-
-      // Validate user existence
-      const verifyUserQuery = `SELECT * FROM users WHERE users_Id = ?`;
-      const userExists = await executeQuery(verifyUserQuery, [users_Id]);
-
-      if (!userExists) {
-        throw new Error("User does not exist.");
-      }
-
-      for (const productId in selectedProductData) {
-        const productData = selectedProductData[productId];
-        const { Price, Quantity } = productData;
-        total += Price * Quantity;
-      }
-
-      if (total > 1000) {
-        debt = total - 1000;
-      }
-
-      // Calculate the total amount as the sum of the Amount column
-      const total_amount = Object.values(selectedProductData).reduce(
-        (sum, product) => sum + parseInt(product.Amount),
-        0
-      );
-
-      // Inserting order into the orders table
-      const insertOrderQuery = `
-        INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, total_amount, order_date, debt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      // Check if the user has already placed an order today
+      const currentDate = new Date().toISOString().slice(0, 10);
+      const existingOrderQuery = `
+        SELECT * FROM orders WHERE users_Id = ? AND DATE(order_date) = ?
       `;
+      const existingOrder = await executeQuery(existingOrderQuery, [
+        users_Id,
+        currentDate,
+      ]);
 
-      for (const productId in selectedProductData) {
-        const productData = selectedProductData[productId];
-        const { Product, Price, Quantity, Amount } = productData;
-
-        // Check if the user has already placed an order today
-        const currentDate = new Date();
-        const startOfDay = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate()
-        );
-        const endOfDay = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate() + 1
-        );
-
-        const existingOrderQuery = `
-      SELECT * FROM orders
-      WHERE users_Id = ? AND order_date >= ? AND order_date < ?`;
-        const existingOrder = await executeQuery(existingOrderQuery, [
-          users_Id,
-          startOfDay,
-          endOfDay,
-        ]);
-
-        if (existingOrder && existingOrder.length > 0) {
-          throw new Error("User has already placed an order today.");
+      if (existingOrder.length > 0) {
+        // If an existing order exists, update the order instead of creating a new one
+        for (const productId in selectedProductData) {
+          const productData = selectedProductData[productId];
+          const { Price, Quantity } = productData;
+          total += Price * Quantity;
         }
-        await executeQuery(insertOrderQuery, [
-          users_Id,
-          Username,
-          productId,
-          Product,
-          Price,
-          Quantity,
-          Amount,
-          total_amount,
-          currentDate,
-          debt,
-        ]);
+
+        if (total > 1000) {
+          debt = total - 1000;
+        }
+
+        // Update the existing order
+        const updateOrderQuery = `
+          UPDATE orders 
+          SET Price = ?, Quantity = ?, Amount = ?, total_amount = ?, debt = ?
+          WHERE users_Id = ? AND DATE(order_date) = ? AND product_Id = ?
+        `;
+
+        for (const productId in selectedProductData) {
+          const productData = selectedProductData[productId];
+          const { Price, Quantity, Amount } = productData;
+
+          await executeQuery(updateOrderQuery, [
+            Price,
+            Quantity,
+            Amount,
+            total,
+            debt,
+            users_Id,
+            currentDate,
+            productId,
+          ]);
+        }
+      } else {
+        // If no existing order exists, proceed with creating a new order
+        for (const productId in selectedProductData) {
+          const productData = selectedProductData[productId];
+          const { Price, Quantity } = productData;
+          total += Price * Quantity;
+        }
+
+        if (total > 1000) {
+          debt = total - 1000;
+        }
+
+        // Calculate the total amount as the sum of the Amount column multiplied by Quantity
+        const total_amount = Object.values(selectedProductData).reduce(
+          (sum, product) =>
+            sum + parseInt(product.Amount) * parseInt(product.Quantity),
+          0
+        );
+
+        // Inserting order into the orders table
+        const insertOrderQuery = `
+          INSERT INTO orders (users_Id, Username, product_Id, Product, Price, Quantity, Amount, total_amount, order_date, debt)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        for (const productId in selectedProductData) {
+          const productData = selectedProductData[productId];
+          const { Product, Price, Quantity, Amount } = productData;
+
+          await executeQuery(insertOrderQuery, [
+            users_Id,
+            Username,
+            productId,
+            Product,
+            Price,
+            Quantity,
+            Amount,
+            total_amount,
+            currentDate,
+            debt,
+          ]);
+        }
       }
 
       res.status(200).send("Order placed successfully");
@@ -98,23 +105,26 @@ module.exports = {
 
   async getAllOrders(req, res, next) {
     try {
-      let getAllOrdersQuery = `
+      const getAllOrdersQuery = `
         SELECT
+          orders.order_Id,
           orders.users_Id,
           users.Username,
+          DATE_FORMAT(orders.order_date, '%Y-%m-%d') AS order_date,
           GROUP_CONCAT(
             CONCAT(
-              orders.Product , 
+              orders.Product, 
               '(', orders.Quantity, ')-',                       
-               orders.Amount 
+              orders.Amount
             )
+            ORDER BY orders.order_date -- Sort by order_date for grouping by date
           ) AS Orders,
-          orders.total_amount,
-          orders.debt,
-          orders.order_date
+          SUM(orders.Amount) AS total_amount,
+          orders.debt
         FROM orders
         LEFT JOIN users ON orders.users_Id = users.users_Id
-        GROUP BY orders.users_Id, users.Username
+        GROUP BY DATE_FORMAT(orders.order_date, '%Y-%m-%d'), orders.users_Id -- Group by formatted order_date and users_Id
+        ORDER BY orders.order_date DESC -- Sort the results by order_date descending
       `;
 
       const orders = await executeQuery(getAllOrdersQuery);
@@ -122,12 +132,13 @@ module.exports = {
       if (orders && orders.length > 0) {
         res.status(200).json(
           orders.map((order) => ({
+            order_Id: order.order_Id,
             users_Id: order.users_Id,
             Username: order.Username,
+            order_date: order.order_date,
             orders: order.Orders ? order.Orders.split(",") : [],
             total_amount: order.total_amount,
             debt: order.debt,
-            order_date: order.order_date,
           }))
         );
       } else {
@@ -144,10 +155,39 @@ module.exports = {
   async getOrdersByUser(req, res, next) {
     try {
       const { users_Id } = req.user;
-      const getUserOrdersQuery = `SELECT * FROM orders WHERE users_Id = ?`;
-      const orders = await executeQuery(getUserOrdersQuery, [users_Id]);
+      const getOrdersByUserQuery = `
+        SELECT
+          orders.order_date,
+          GROUP_CONCAT(
+            CONCAT(
+              orders.Product,
+              '(', orders.Quantity, ')-',
+              orders.Amount
+            )
+            ORDER BY orders.order_date
+          ) AS Orders,
+          SUM(orders.Amount) AS total_amount,
+          SUM(orders.debt) AS debt
+        FROM orders
+        WHERE orders.users_Id = ?
+        GROUP BY orders.order_date
+        ORDER BY orders.order_date DESC
+      `;
 
-      res.status(200).json(orders);
+      const orders = await executeQuery(getOrdersByUserQuery, [users_Id]);
+
+      if (orders && orders.length > 0) {
+        res.status(200).json(
+          orders.map((order) => ({
+            order_date: order.order_date,
+            orders: order.Orders ? order.Orders.split(",") : [],
+            total_amount: order.total_amount,
+            debt: order.debt,
+          }))
+        );
+      } else {
+        res.status(200).json([]);
+      }
     } catch (error) {
       console.error(error);
       res
@@ -159,13 +199,32 @@ module.exports = {
   async deleteUserOrder(req, res, next) {
     try {
       const { users_Id } = req.user;
-      const sql = `DELETE FROM orders WHERE users_Id = ?`;
-      await executeQuery(sql, [users_Id]);
-      res.send({ message: "Order history cleared successfully" });
+      const { order_date } = req.body; // Assuming order_date is provided in the request body
+
+      // Check if the order with the given users_Id and order_date exists
+      const checkOrderQuery = `SELECT * FROM orders WHERE users_Id = ? AND DATE(order_date) = ?`;
+      const existingOrder = await executeQuery(checkOrderQuery, [
+        users_Id,
+        order_date,
+      ]);
+
+      if (!existingOrder || existingOrder.length === 0) {
+        return res.status(404).send({
+          message: "Order not found.",
+        });
+      }
+
+      // Delete the order(s) for the given users_Id and order_date
+      const deleteOrderQuery = `DELETE FROM orders WHERE users_Id = ? AND DATE(order_date) = ?`;
+      await executeQuery(deleteOrderQuery, [users_Id, order_date]);
+
+      res.status(200).send({
+        message: "Order(s) deleted successfully.",
+      });
     } catch (error) {
       console.error(error);
       res.status(500).send({
-        message: "Failed to delete user orders",
+        message: "Failed to delete the order(s)",
         error: error.message,
       });
     }

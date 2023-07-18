@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt"); //hiding password
 const nodemailer = require("nodemailer"); // sending messages
 const jwt = require("jsonwebtoken");
 const cron = require("cron"); // making alert alarm
-require("crypto").randomBytes(64).toString("hex");
+require("crypto").randomBytes(64).toString("hex"); //It generates a specified number of random bytes.
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -103,7 +103,7 @@ scheduler2.start(); //calling alert 2 to place order
 
 module.exports = {
   //logout user
-  async logout(req, res, next) {
+  async logout(req, res) {
     try {
       req.session.destroy(); // Clear the session
 
@@ -116,7 +116,7 @@ module.exports = {
     }
   },
 
-  async register(req, res, next) {
+  async register(req, res) {
     try {
       const email = req.body.email;
       const username = req.body.username;
@@ -146,7 +146,7 @@ module.exports = {
     }
   },
 
-  async setPassword(req, res, next) {
+  async setPassword(req, res) {
     try {
       const email = req.body.email;
       const password = req.body.password;
@@ -163,7 +163,7 @@ module.exports = {
     }
   },
 
-  async login(req, res, next) {
+  async login(req, res) {
     try {
       const { email, password } = req.body;
 
@@ -189,7 +189,12 @@ module.exports = {
 
       return res.status(200).send({
         token,
-        email: user[0].email,
+        user: {
+          users_Id: user[0].users_Id,
+          Username: user[0].Username,
+          Email: user[0].Email,
+          UserType: user[0].UserType,
+        },
         message: "User logged in successfully",
       });
     } catch (error) {
@@ -198,10 +203,11 @@ module.exports = {
     }
   },
 
-  async getAllUsers(req, res, next) {
+  async getAllUsers(req, res) {
     try {
       const getUsersQuery = "SELECT * FROM users";
       const users = await executeQuery(getUsersQuery);
+
       res.send(users);
     } catch (error) {
       console.error(error);
@@ -211,7 +217,7 @@ module.exports = {
     }
   },
 
-  async deleteUser(req, res, next) {
+  async deleteUser(req, res) {
     try {
       const userId = req.params.id;
 
@@ -226,7 +232,8 @@ module.exports = {
         .send({ message: "Failed to delete user", error: error.message });
     }
   },
-  async activateUser(req, res, next) {
+
+  async activateUser(req, res) {
     try {
       const userId = req.params.id;
 
@@ -242,7 +249,7 @@ module.exports = {
     }
   },
 
-  async deactivateUser(req, res, next) {
+  async deactivateUser(req, res) {
     try {
       const userId = req.params.id;
 
