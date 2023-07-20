@@ -12,6 +12,12 @@ const productsRouter = require("./routes/products");
 const ordersRouter = require("./routes/orders");
 
 app.use(
+  cors({
+    origin: "https://odysseybreaksytem.netlify.app",
+  })
+);
+
+app.use(
   session({
     secret: "your-secret-key",
     resave: false,

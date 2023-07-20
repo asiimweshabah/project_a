@@ -16,7 +16,7 @@ function Admin() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  });
 
   useEffect(() => {
     // Retrieve user activation status from local storage
@@ -58,7 +58,6 @@ function Admin() {
         (user) => user.UserType === selectedUserType
       );
     }
-
     setFilteredUsers(filteredUsers);
   }
 

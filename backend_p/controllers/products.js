@@ -1,6 +1,6 @@
 const executeQuery = require("../db/execute-query");
 
-module.exports = {
+http: module.exports = {
   async createProduct(req, res, next) {
     try {
       const { product, price, quantity, amount } = req.body;

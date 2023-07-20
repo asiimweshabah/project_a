@@ -156,6 +156,7 @@ export default function Products() {
 
       setIsOrderPlaced(true);
       setSelectedProducts([]);
+      setOrders([]);
       window.alert("Order placed successfully!");
     } catch (error) {
       console.error("Error placing order:", error);
