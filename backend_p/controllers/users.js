@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 async function sendVerificationMessage(email) {
   try {
     const mailOptions = {
-      from: "shaban.asiimwe.upti@gmail.com",
+      from: "Odysseytechnologies",
       to: email,
       subject: "Set password to login",
       html: `<body>
@@ -50,7 +50,7 @@ async function sendOrderPlacementAlert(userId, orderId, username) {
     );
 
     const mailOptions = {
-      from: "your-email@example.com",
+      from: "Odysseytechnologies.com",
       to: user[0].email,
       subject: "Reminder to place order",
       html: `
@@ -96,7 +96,7 @@ async function handleOrderReminder() {
 }
 
 const scheduler1 = new cron.CronJob("0 8 * * *", handleOrderReminder); // 8am
-const scheduler2 = new cron.CronJob("0 18 * * *", handleOrderReminder); //6pm
+const scheduler2 = new cron.CronJob("12 20 * * *", handleOrderReminder); //6pm
 
 scheduler1.start(); //calling alert 1 to place order
 scheduler2.start(); //calling alert 2 to place order

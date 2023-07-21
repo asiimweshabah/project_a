@@ -11,12 +11,16 @@ const usersRouter = require("./routes/users");
 const productsRouter = require("./routes/products");
 const ordersRouter = require("./routes/orders");
 
-app.use(
-  cors({
-    origin: "https://odysseybreaksytem.netlify.app",
-  })
-);
+// app.use(cors());
 
+const corsOptions = {
+  origin: "https://odysseybreaksytem.netlify.app", // Replace this with your frontend domain or a comma-separated list of allowed domains
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Add the HTTP methods your frontend might use
+  credentials: true, // Allow credentials (cookies, authorization headers) to be sent along with requests
+  optionsSuccessStatus: 200, // Respond with a 200 status code for preflight requests
+};
+
+app.use(cors(corsOptions));
 app.use(
   session({
     secret: "your-secret-key",
@@ -30,7 +34,6 @@ dotenv.config();
 
 // access config const
 process.env.TOKEN_SECRET;
-app.use(cors());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");

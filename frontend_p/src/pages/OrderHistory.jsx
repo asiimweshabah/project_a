@@ -15,11 +15,14 @@ export default function Orders() {
   async function fetchData() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:3006/orders`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const response = await axios.get(
+        `https://odysseybreaksystem.cyclic.app/orders`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       setOrders(response.data);
     } catch (error) {
       console.error(error);
@@ -31,11 +34,14 @@ export default function Orders() {
       const result = window.confirm("Confirm clearing all order history?");
       const token = localStorage.getItem("token");
       if (result) {
-        await axios.delete(`http://localhost:3006/orders/deleteOrders`, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
+        await axios.delete(
+          `https://odysseybreaksystem.cyclic.app/orders/deleteOrders`,
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
         await fetchData();
       }
     } catch (error) {

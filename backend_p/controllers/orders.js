@@ -199,27 +199,15 @@ module.exports = {
   async deleteUserOrder(req, res, next) {
     try {
       const { users_Id } = req.user;
-      const { order_date } = req.body; // Assuming order_date is provided in the request body
+      const { order_date } = req.params; // Extract the order_date from the request parameters
 
-      // Check if the order with the given users_Id and order_date exists
-      const checkOrderQuery = `SELECT * FROM orders WHERE users_Id = ? AND DATE(order_date) = ?`;
-      const existingOrder = await executeQuery(checkOrderQuery, [
-        users_Id,
-        order_date,
-      ]);
-
-      if (!existingOrder || existingOrder.length === 0) {
-        return res.status(404).send({
-          message: "Order not found.",
-        });
-      }
-
-      // Delete the order(s) for the given users_Id and order_date
       const deleteOrderQuery = `DELETE FROM orders WHERE users_Id = ? AND DATE(order_date) = ?`;
+
+      // Execute the delete query
       await executeQuery(deleteOrderQuery, [users_Id, order_date]);
 
       res.status(200).send({
-        message: "Order(s) deleted successfully.",
+        message: "Order(s) dele successfully.ted",
       });
     } catch (error) {
       console.error(error);

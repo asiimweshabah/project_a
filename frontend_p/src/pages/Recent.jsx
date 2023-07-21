@@ -13,7 +13,7 @@ export default function Orders() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3006/orders/myOrders/${userId}`,
+        `https://odysseybreaksystem.cyclic.app/orders/myOrders/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -26,31 +26,6 @@ export default function Orders() {
     }
   }
 
-  // async function deleteUserOrder(orderId) {
-  //   const confirmed = window.confirm(
-  //     "Are you sure you want to delete this order?"
-  //   );
-  //   if (confirmed) {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       await axios.delete(
-  //         `http://localhost:3006/orders/deleteMyOrders/${orderId}`,
-  //         {
-  //           headers: {
-  //             Authorization: "Bearer " + token,
-  //           },
-  //         }
-  //       );
-
-  //       // Remove the deleted order from the state
-  //       setUsersOrders((prevOrders) =>
-  //         prevOrders.filter((order) => order.order_Id !== orderId)
-  //       );
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // }
   // Frontend code
   async function deleteUserOrder(orderId, orderDate) {
     const confirmed = window.confirm(
@@ -60,12 +35,11 @@ export default function Orders() {
       try {
         const token = localStorage.getItem("token");
         await axios.delete(
-          `http://localhost:3006/orders/deleteMyOrders/${orderId}`,
+          `https://odysseybreaksystem.cyclic.app/orders/deleteMyOrder/${orderDate}`,
           {
             headers: {
               Authorization: "Bearer " + token,
             },
-            data: { order_date: orderDate }, // Include the order_date in the request body
           }
         );
 
@@ -113,7 +87,11 @@ export default function Orders() {
                       <td className="ordr-with">
                         <button
                           className="btn-danger btn-sm btn"
-                          onClick={() => deleteUserOrder(order.order_Id)}
+                          onClick={() =>
+                            deleteUserOrder(
+                              format(new Date(order.order_date), "yyyy-MM-dd")
+                            )
+                          }
                         >
                           Delete Order
                         </button>
