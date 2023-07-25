@@ -38,11 +38,11 @@ async function sendVerificationMessage(email) {
 }
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.TOKEN_SECRET /*, { expiresIn: "36000s" }*/);
+  return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "36000s" });
 }
 
 //placing order alarm alert
-async function sendOrderPlacementAlert(userId, orderId, username) {
+async function sendOrderPlacementAlert(userId) {
   try {
     const user = await executeQuery(
       "SELECT email FROM users WHERE users_Id = ?",
