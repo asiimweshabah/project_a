@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
-
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import AddProduct from "./AddProduct";
 
 export default function Products() {
   const [orders, setOrders] = useState([]);
-
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [isProductSelected, setIsProductSelected] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-
   const userType = localStorage.getItem("UserType");
 
   useEffect(() => {
@@ -137,7 +134,7 @@ export default function Products() {
       });
 
       await axios.post(
-        "https://odysseybreaksystem.cyclic.app/orders/placeOrder",
+        `https://odysseybreaksystem.cyclic.app/orders/placeOrder`,
         { selectedProductIds, selectedProductData },
         {
           headers: {
@@ -160,7 +157,6 @@ export default function Products() {
       setIsOrderPlaced(true);
       setSelectedProducts([]);
       setOrders([]);
-      window.alert("Order placed successfully!");
     } catch (error) {
       console.error("Error placing order:", error);
     }

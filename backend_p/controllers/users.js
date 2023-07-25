@@ -1,7 +1,7 @@
 const executeQuery = require("../db/execute-query");
 const bcrypt = require("bcrypt"); //hiding password
 const nodemailer = require("nodemailer"); // sending messages
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); //token
 const cron = require("cron"); // making alert alarm
 require("crypto").randomBytes(64).toString("hex"); //It generates a specified number of random bytes.
 

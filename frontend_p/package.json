@@ -2,7 +2,7 @@
   "name": "project_a",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Odysseybreaksystem",
+  "homepage": "https://odysseybreaksytem.netlify.app",
   "dependencies": {
     "@stripe/stripe-js": "^1.53.0",
     "@testing-library/jest-dom": "^5.16.5",

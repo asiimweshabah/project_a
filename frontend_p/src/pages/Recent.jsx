@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 
-export default function Orders() {
+export default function Orders({ userId }) {
   const [usersOrders, setUsersOrders] = useState([]);
 
   useEffect(() => {
     getOrdersByUser();
-  }, []);
+  });
 
-  async function getOrdersByUser(userId) {
+  async function getOrdersByUser() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -26,26 +26,25 @@ export default function Orders() {
     }
   }
 
-  // Frontend code
-  async function deleteUserOrder(orderId, orderDate) {
+  async function deleteUserOrder(users_Id, order_date) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this order?"
+      "Are you sure you want to delete all orders for this date?"
     );
     if (confirmed) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(
-          `https://odysseybreaksystem.cyclic.app/orders/deleteMyOrder/${orderDate}`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        await axios.delete(`https://odysseybreaksystem.cyclic.app/orders/delete`, {
+          data: { users_Id, order_date },
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
 
-        // Remove the deleted order from the state
         setUsersOrders((prevOrders) =>
-          prevOrders.filter((order) => order.order_Id !== orderId)
+          prevOrders.filter(
+            (order) =>
+              order.order_date !== order_date || order.users_Id !== users_Id
+          )
         );
       } catch (error) {
         console.error(error);
@@ -65,14 +64,15 @@ export default function Orders() {
                   {/* <th className="text-white">Price</th>
                   <th className="text-white">Quantity</th> */}
                   <th className="text-white">Order Date</th>
-                  <th className="actions text-white">Totat amount</th>
+                  <th className="actions text-white">Total amount</th>{" "}
+                  {/* Fix the typo in "Total amount" */}
                   <th className="actions text-white">Delete Order</th>
                 </tr>
               </thead>
               <tbody>
                 {Array.isArray(usersOrders) && usersOrders.length > 0 ? (
                   usersOrders.map((order) => (
-                    <tr key={order.product_Id}>
+                    <tr key={order.order_date}>
                       {/* <td className="ordr-with">{order.Product}</td>
                       <td className="ordr-with">{order.Price}</td> */}
                       <td className="ordr-with">
@@ -88,12 +88,10 @@ export default function Orders() {
                         <button
                           className="btn-danger btn-sm btn"
                           onClick={() =>
-                            deleteUserOrder(
-                              format(new Date(order.order_date), "yyyy-MM-dd")
-                            )
+                            deleteUserOrder(order.users_Id, order.order_date)
                           }
                         >
-                          Delete Order
+                          Delete Orders
                         </button>
                       </td>
                     </tr>

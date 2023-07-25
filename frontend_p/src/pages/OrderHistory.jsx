@@ -115,7 +115,7 @@ export default function Orders() {
               </thead>
               <tbody>
                 {currentOrders.map((order) => (
-                  <tr key={order.users_Id}>
+                  <tr key={order.username && order.order_date}>
                     <td>{order.Username}</td>
 
                     <td>

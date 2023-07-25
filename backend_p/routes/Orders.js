@@ -13,11 +13,12 @@ app.post("/placeOrder", [userAuther], ordersController.placeOrder);
 app.delete(
   "/deleteOrders",
   [userAuther, checkAdmin],
+
   ordersController.deleteAllOrders
 );
 
 app.delete(
-  "/deleteMyOrders/:order_date",
+  "/deleteMyOrders/:id/:order_date",
   [userAuther],
   ordersController.deleteUserOrder
 );
