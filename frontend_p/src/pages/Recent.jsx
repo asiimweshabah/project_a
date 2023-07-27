@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 
-export default function Orders({ userId }) {
+export default function Orders() {
   const [usersOrders, setUsersOrders] = useState([]);
 
-  useEffect(() => {
-    getOrdersByUser();
-  });
+  useEffect((users_Id) => {
+    getOrdersByUser(users_Id);
+  }, []);
 
-  async function getOrdersByUser() {
+  async function getOrdersByUser(users_Id) {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://odysseybreaksystem.cyclic.app/orders/myOrders/${userId}`,
+        `http://localhost:3006/orders/myOrders/${users_Id}`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -26,24 +26,28 @@ export default function Orders({ userId }) {
     }
   }
 
-  async function deleteUserOrder(users_Id, order_date) {
+  async function deleteUserOrder(Id, total_amount) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete all orders for this date?"
+      "Are you sure you want to delete this order?"
     );
     if (confirmed) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`https://odysseybreaksystem.cyclic.app/orders/delete`, {
-          data: { users_Id, order_date },
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
 
+        await axios.delete(
+          `http://localhost:3006/orders/deleteMyOrders/${Id}?total_amount=${total_amount}`,
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+
+        // Filter out the deleted order from the local state
         setUsersOrders((prevOrders) =>
           prevOrders.filter(
             (order) =>
-              order.order_date !== order_date || order.users_Id !== users_Id
+              order.users_Id !== Id || order.total_amount !== total_amount
           )
         );
       } catch (error) {
@@ -88,10 +92,10 @@ export default function Orders({ userId }) {
                         <button
                           className="btn-danger btn-sm btn"
                           onClick={() =>
-                            deleteUserOrder(order.users_Id, order.order_date)
+                            deleteUserOrder(order.users_Id, order.total_amount)
                           }
                         >
-                          Delete Orders
+                          Delete Order
                         </button>
                       </td>
                     </tr>

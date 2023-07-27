@@ -30,7 +30,7 @@ const SideMenu = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://odysseybreaksystem.cyclic.app/users/allUsers`,
+          `http://localhost:3006/users/allUsers`,
           {
             headers: {
               Authorization: "Bearer " + token,

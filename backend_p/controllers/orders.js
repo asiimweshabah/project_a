@@ -198,12 +198,23 @@ module.exports = {
 
   async deleteUserOrder(req, res, next) {
     try {
-      const { users_Id, order_date } = req.params; // Extract userId and order_date from the URL parameters
-      const deleteUserOrderQuery = `DELETE FROM orders WHERE users_Id = ? AND order_date = ?`;
+      const { users_Id } = req.user;
+      const { total_amount } = req.query;
+
+      if (!users_Id || !total_amount) {
+        return res
+          .status(400)
+          .send("Invalid parameters: users_Id or total_amount is missing.");
+      }
+
+      const deleteUserOrderQuery = `
+        DELETE FROM orders
+        WHERE orders.users_Id = ? AND orders.total_amount = ?
+      `;
 
       const result = await executeQuery(deleteUserOrderQuery, [
         users_Id,
-        order_date,
+        total_amount,
       ]);
 
       if (result.affectedRows > 0) {

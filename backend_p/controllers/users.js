@@ -38,7 +38,7 @@ async function sendVerificationMessage(email) {
 }
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "36000s" });
+  return jwt.sign(user, process.env.TOKEN_SECRET /*, { expiresIn: "36000s" }*/);
 }
 
 //placing order alarm alert

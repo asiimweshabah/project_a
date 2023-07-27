@@ -14,7 +14,7 @@ const {
   // createOrderHistoryTable,
 } = require("../db/create-database");
 
-var debug = require("debug")("backend-p:server");
+var debug = require("debug"); /*("backend-p:server")*/
 var http = require("http");
 
 /**

@@ -18,18 +18,15 @@ export default function Products() {
   async function fetchData() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `https://odysseybreaksystem.cyclic.app/products`,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const response = await axios.get(`http://localhost:3006/products`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       setOrders(response.data);
 
       const userResponse = await axios.get(
-        `https://odysseybreaksystem.cyclic.app/users/allUsers`,
+        `http://localhost:3006/users/allUsers`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -52,7 +49,7 @@ export default function Products() {
       );
       if (confirmed) {
         await axios.delete(
-          `https://odysseybreaksystem.cyclic.app/products/deleteProduct/${id}`,
+          `http://localhost:3006/products/deleteProduct/${id}`,
           {
             headers: {
               Authorization: "Bearer " + token,
@@ -134,7 +131,7 @@ export default function Products() {
       });
 
       await axios.post(
-        `https://odysseybreaksystem.cyclic.app/orders/placeOrder`,
+        `http://localhost:3006/orders/placeOrder`,
         { selectedProductIds, selectedProductData },
         {
           headers: {
@@ -145,7 +142,7 @@ export default function Products() {
 
       // Update the products table with selected products and their quantities and amounts
       await axios.post(
-        "https://odysseybreaksystem.cyclic.app/products/updateProducts",
+        "http://localhost:3006/products/updateProducts",
         { selectedProductData },
         {
           headers: {

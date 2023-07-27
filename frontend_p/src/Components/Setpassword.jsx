@@ -27,7 +27,7 @@ const Setpassword = () => {
 
     console.log(searchParams);
     axios
-      .post(`https://odysseybreaksystem.cyclic.app/users/setpassword`, {
+      .post(`http://localhost:3006/users/setpassword`, {
         email: `${searchParams.get("email")}`,
         password,
       })

@@ -30,13 +30,10 @@ export default function Signin() {
       setIsSubmitting(true);
       setLoginStatus("");
       try {
-        const response = await axios.post(
-          `https://odysseybreaksystem.cyclic.app/users/login`,
-          {
-            email: email,
-            password: password,
-          }
-        );
+        const response = await axios.post(`http://localhost:3006/users/login`, {
+          email: email,
+          password: password,
+        });
 
         if (response.data.message === "User does not exist") {
           setLoginStatus("User does not exist");
@@ -61,7 +58,7 @@ export default function Signin() {
 
     try {
       const response = await axios.post(
-        `https://odysseybreaksystem.cyclic.app/users/register`,
+        `http://localhost:3006/users/register`,
         {
           email: email,
           password: password,

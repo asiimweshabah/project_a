@@ -18,7 +18,7 @@ app.delete(
 );
 
 app.delete(
-  "/deleteMyOrders/:id/:order_date",
+  "/deleteMyOrders/:id",
   [userAuther],
   ordersController.deleteUserOrder
 );

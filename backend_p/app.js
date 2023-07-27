@@ -11,12 +11,13 @@ const usersRouter = require("./routes/users");
 const productsRouter = require("./routes/products");
 const ordersRouter = require("./routes/orders");
 
-var corsOptions = {
-  origin: ["https://odysseybreaksytem.netlify.app"],
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: "https://odysseybreaksytem.netlify.app",
+//     credentials: true,
+//   })
+// );
 
 app.use(
   session({
@@ -26,10 +27,8 @@ app.use(
   })
 );
 
-// get config consts
 dotenv.config();
 
-// access config const
 process.env.TOKEN_SECRET;
 
 app.set("views", path.join(__dirname, "views"));
