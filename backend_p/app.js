@@ -11,7 +11,13 @@ const usersRouter = require("./routes/users");
 const productsRouter = require("./routes/products");
 const ordersRouter = require("./routes/orders");
 
-app.use(cors());
+const corsOptions = {
+  origin: ["https://odysseybreaksytem.netlify.app"],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+// app.use(cors());
 // app.use(
 //   cors({
 //     origin: "https://odysseybreaksytem.netlify.app",
