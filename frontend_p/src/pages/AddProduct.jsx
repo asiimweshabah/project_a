@@ -36,7 +36,7 @@ export default function AddProduct({ onClose }) {
       event.preventDefault();
       const { product, price, quantity, amount } = formData;
       await axios.post(
-        "https://odysseybreaksystem.cyclic.app/products/createProduct",
+        "http://localhost:3006/products/createProduct",
         {
           product,
           price,

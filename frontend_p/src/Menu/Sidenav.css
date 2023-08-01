@@ -48,6 +48,9 @@ body {
 .Modal {
   background-color: #5f2781;
 }
+.form_bg {
+  background-color: #e8e6ff;
+}
 .navbar-item {
   width: 100%;
   height: 80px;

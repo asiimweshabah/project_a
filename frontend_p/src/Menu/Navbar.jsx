@@ -6,6 +6,12 @@ import { CiMenuKebab } from "react-icons/ci";
 export const Navbar = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
+  const [userType, setUserType] = useState(localStorage.getItem("UserType"));
+
+  useEffect(() => {
+    // Check for changes in UserType in localStorage and update the state accordingly
+    setUserType(localStorage.getItem("UserType"));
+  }, []);
 
   const toggleSignUpModal = () => {
     setShowSignUpModal(!showSignUpModal);
@@ -45,43 +51,42 @@ export const Navbar = () => {
               </Link>
             </li>
 
-            {localStorage.getItem("UserType") &&
-              localStorage.getItem("UserType") !== "normal" && (
-                <>
-                  <li className="nav-item">
-                    <Link
-                      to="/admin_orderhistory"
-                      className="nav-link Link"
-                      onClick={toggleNav}
-                    >
-                      Order History
-                    </Link>
-                  </li>
+            {userType && userType !== "normal" && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    to="/admin_orderhistory"
+                    className="nav-link Link"
+                    onClick={toggleNav}
+                  >
+                    Order History
+                  </Link>
+                </li>
 
-                  <li className="nav-item">
-                    <Link
-                      to="/admin_users"
-                      className="nav-link Link"
-                      onClick={toggleNav}
-                    >
-                      Users
-                    </Link>
-                  </li>
+                <li className="nav-item">
+                  <Link
+                    to="/admin_users"
+                    className="nav-link Link"
+                    onClick={toggleNav}
+                  >
+                    Users
+                  </Link>
+                </li>
 
-                  <li className="nav-item">
-                    <Link
-                      to="#"
-                      className="nav-link Link"
-                      onClick={() => {
-                        toggleSignUpModal();
-                        toggleNav();
-                      }}
-                    >
-                      Add User
-                    </Link>
-                  </li>
-                </>
-              )}
+                <li className="nav-item">
+                  <Link
+                    to="#"
+                    className="nav-link Link"
+                    onClick={() => {
+                      toggleSignUpModal();
+                      toggleNav();
+                    }}
+                  >
+                    Add User
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>

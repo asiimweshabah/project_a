@@ -1,13 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import SideMenu from "./Menu/SideMenu";
+// import SignIn from "./Components/SignIn";
+import Navbar from "./Menu/Navbar";
 
 const Outlets = () => {
   return (
     <div>
       <React.Fragment>
-        <SideMenu />
-
+        <Navbar />/ {/* <SignIn /> */}
         <Outlet />
       </React.Fragment>
     </div>

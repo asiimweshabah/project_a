@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Signin() {
+export default function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("normal");
   const [loginStatus, setLoginStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const login = async (e) => {
@@ -78,13 +79,8 @@ export default function Signin() {
   };
 
   return (
-    <div>
-      <form
-        id="form"
-        method="POST"
-        action="/users/login"
-        className="justify-content-center px-5 pb-5 w-100 form"
-      >
+    <div className="form-container form_bg">
+      <form id="form" method="POST" action="/users/login" className="w-50 ">
         <div>
           <label htmlFor="email">
             Email
@@ -142,7 +138,6 @@ export default function Signin() {
           </Link>
         </span>
       </form>
-
       {/* User registration form */}
       {loginStatus === "User does not exist. Would you like to register?" && (
         <form

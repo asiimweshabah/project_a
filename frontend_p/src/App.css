@@ -31,10 +31,12 @@ th {
   background-color: #5f2781 !important;
 }
 
-/* 
-.top {
-  margin-top: 10%;
-} */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Set the height to 100vh to center vertically */
+}
 
 .container {
   display: flex;
@@ -47,8 +49,17 @@ th {
   width: 5%;
 }
 
+.w {
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  width: 700px;
+}
 .form {
-  width: 1000px;
+  /* width: 1000px; */
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
 }
 .form-grid {
   display: grid;
