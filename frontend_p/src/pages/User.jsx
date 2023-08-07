@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { toast } from "react-toastify";
 export default function User() {
   const [orders, setOrders] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -48,7 +48,10 @@ export default function User() {
       setSelectedProducts([]);
       setSelectedQuantities({});
       fetchData();
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error(error);
       alert("Failed to place the order. Please try again.");

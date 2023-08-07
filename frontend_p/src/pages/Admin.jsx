@@ -3,6 +3,7 @@ import axios from "axios";
 import { Modal } from "react-bootstrap";
 import SignUp from "../Components/SignUp";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,9 @@ function Admin() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [userActivationStatus, setUserActivationStatus] = useState({});
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
+  const [deletingUserId, setDeletingUserId] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -27,6 +31,14 @@ function Admin() {
     // filterUsers();
   }, [selectedCompany, selectedUserType]);
 
+  const deleteUser = (userId) => {
+    setDeletingUserId(userId);
+    setShowDeleteConfirmationModal(true);
+  };
+
+  const handleDeleteConfirmationClose = () => {
+    setShowDeleteConfirmationModal(false);
+  };
   async function fetchUsers() {
     try {
       const token = localStorage.getItem("token");
@@ -61,22 +73,27 @@ function Admin() {
     setFilteredUsers(filteredUsers);
   }
 
-  async function deleteUser(userId) {
+  const handleDeleteConfirmationProceed = async () => {
     try {
       const token = localStorage.getItem("token");
-      const result = window.confirm("Deleting user?");
-      if (result) {
-        await axios.delete(`http://localhost:3006/users/deleteUser/${userId}`, {
+      await axios.delete(
+        `http://localhost:3006/users/deleteUser/${deletingUserId}`,
+        {
           headers: {
             Authorization: "Bearer " + token,
           },
-        });
-        await fetchUsers();
-      }
+        }
+      );
+      await fetchUsers();
+      toast.success("User deleted successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error(error);
     }
-  }
+    setShowDeleteConfirmationModal(false);
+  };
 
   const toggleUserActivation = async (userId) => {
     try {
@@ -272,6 +289,30 @@ function Admin() {
           </Modal>
         )}
       </div>
+      <Modal
+        centered
+        show={showDeleteConfirmationModal}
+        onHide={handleDeleteConfirmationClose}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm User Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this user?</Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn btn-secondary"
+            onClick={handleDeleteConfirmationClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={handleDeleteConfirmationProceed}
+          >
+            Delete
+          </button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

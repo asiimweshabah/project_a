@@ -4,7 +4,6 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Setpassword from "./Components/Setpassword";
 import Outlets from "./Outlets";
-import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Products from "./pages/Products";
 import OrderHistory from "./pages/OrderHistory";
@@ -17,9 +16,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<SignIn />} />
-        <Route path="/main-app" element={<Outlets />}>
-          <Route path="home" exact element={<Home />} />
-        </Route>
+        <Route path="/main-app" element={<Outlets />}></Route>
 
         <Route element={<SignInOutlets />}>
           <Route path="/admin_users" element={<Admin />} />

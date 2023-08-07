@@ -7,7 +7,7 @@ const Outlets = () => {
   return (
     <div>
       <React.Fragment>
-        <Navbar />/ {/* <SignIn /> */}
+        <Navbar />
         <Outlet />
       </React.Fragment>
     </div>

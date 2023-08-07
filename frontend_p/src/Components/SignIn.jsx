@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function LogIn() {
   const [email, setEmail] = useState("");
@@ -44,6 +45,10 @@ export default function LogIn() {
           localStorage.setItem("UserType", response.data.user.UserType);
           localStorage.setItem("Email", response.data.user.Email);
           navigate("/products");
+          toast.success("User logged in successfully!", {
+            position: "top-center",
+            autoClose: 2000, // The duration of the toast message in milliseconds
+          });
         } else {
           setLoginStatus(response.data.error);
         }

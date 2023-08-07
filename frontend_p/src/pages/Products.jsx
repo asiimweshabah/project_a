@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import AddProduct from "./AddProduct";
-
+import { toast } from "react-toastify";
 export default function Products() {
   const [orders, setOrders] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -10,10 +10,51 @@ export default function Products() {
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const userType = localStorage.getItem("UserType");
+  const [productToDelete, setProductToDelete] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
+  function confirmDeleteOrder(productId) {
+    const productToDelete = orders.find(
+      (order) => order.product_Id === productId
+    );
+    setProductToDelete(productToDelete);
+    setShowConfirmationModal(true);
+  }
+  const addProductToState = (newProduct) => {
+    setOrders((prevOrders) => [...prevOrders, newProduct]);
+  };
+
+  // Function to add a new product
+  const addNewProduct = async (newProductData) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        "http://localhost:3006/products/addProduct",
+        newProductData,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      const newProduct = response.data;
+      addProductToState(newProduct); // Update state with the new product
+      setShowSignUpModal(false); // Close the modal
+      toast.success("Product added successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      console.error("Error adding product:", error);
+      toast.error("Failed to add product. Please try again.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    }
+  };
 
   async function fetchData() {
     try {
@@ -44,29 +85,23 @@ export default function Products() {
   async function deleteOrder(id) {
     try {
       const token = localStorage.getItem("token");
-      const confirmed = window.confirm(
-        "Are you sure you want to delete this product?"
-      );
-      if (confirmed) {
-        await axios.delete(
-          `http://localhost:3006/products/deleteProduct/${id}`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-        await fetchData();
-        window.alert("Order deleted successfully!");
-      }
+      await axios.delete(`http://localhost:3006/products/deleteProduct/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      await fetchData();
+      toast.success("Product deleted successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      setShowConfirmationModal(false);
     } catch (error) {
+      toast.error("Failed to delete product. Please try again.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       console.error(error);
-    }
-  }
-
-  function confirmDeleteOrder(id) {
-    if (id) {
-      deleteOrder(id);
     }
   }
 
@@ -154,8 +189,16 @@ export default function Products() {
       setIsOrderPlaced(true);
       setSelectedProducts([]);
       setOrders([]);
+      toast.success("Order placed successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error("Error placing order:", error);
+      toast.error("Failed to place order. Please try again.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -279,11 +322,43 @@ export default function Products() {
                 {/* <Modal.Title>Add User</Modal.Title> */}
               </Modal.Header>
               <Modal.Body>
-                <AddProduct onClose={handleCancelModal} />
+                <AddProduct
+                  onClose={handleCancelModal}
+                  onProductAdd={addNewProduct}
+                />
               </Modal.Body>
             </Modal>
           )}
         </div>
+        {showConfirmationModal && productToDelete && (
+          <Modal
+            show={showConfirmationModal}
+            onHide={() => setShowConfirmationModal(false)}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm Product Deletion</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to delete the product:{" "}
+              {productToDelete.Product}?
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowConfirmationModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={() => deleteOrder(productToDelete.product_Id)}
+              >
+                Delete
+              </button>
+            </Modal.Footer>
+          </Modal>
+        )}
       </div>
     </div>
   );

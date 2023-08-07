@@ -1,16 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
+import { Modal } from "react-bootstrap";
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(10);
   const [username, setUsername] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
+  const deleteAllOrders = () => {
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setShowConfirmationModal(false);
+  };
+
+  const handleConfirmationProceed = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:3006/orders/deleteOrders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      await fetchData();
+      toast.success("Order history cleared successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    setShowConfirmationModal(false);
+  };
 
   async function fetchData() {
     try {
@@ -21,23 +50,6 @@ export default function Orders() {
         },
       });
       setOrders(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function deleteAllOrders() {
-    try {
-      const result = window.confirm("Confirm clearing all order history?");
-      const token = localStorage.getItem("token");
-      if (result) {
-        await axios.delete(`http://localhost:3006/orders/deleteOrders`, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
-        await fetchData();
-      }
     } catch (error) {
       console.error(error);
     }
@@ -155,6 +167,32 @@ export default function Orders() {
               </div>
             </div>
           </div>
+          <Modal
+            centered
+            show={showConfirmationModal}
+            onHide={handleConfirmationClose}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm Clearing Order History</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to clear all order history?
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                className="btn btn-secondary"
+                onClick={handleConfirmationClose}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleConfirmationProceed}
+              >
+                Proceed
+              </button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 const Setpassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,6 +34,7 @@ const Setpassword = () => {
         setMessage(response.data.message);
         navigate("/", { state: { showSignInModal: false } });
       })
+
       .catch((error) => {
         setMessage(error.response.data.error);
       });

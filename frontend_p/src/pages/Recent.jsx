@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
-
+import { toast } from "react-toastify";
+import { Modal } from "react-bootstrap";
 export default function Orders() {
   const [usersOrders, setUsersOrders] = useState([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState({});
 
   useEffect((users_Id) => {
     getOrdersByUser(users_Id);
   }, []);
+  const deleteUserOrder = (Id, total_amount) => {
+    setShowConfirmationModal(true); // Show the confirmation modal
+    // Save the Id and total_amount of the order to be deleted in a state variable
+    // so that we can access it inside the confirmation modal
+    setOrderToDelete({ Id, total_amount });
+  };
 
   async function getOrdersByUser(users_Id) {
     try {
@@ -26,35 +35,39 @@ export default function Orders() {
     }
   }
 
-  async function deleteUserOrder(Id, total_amount) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this order?"
-    );
-    if (confirmed) {
-      try {
-        const token = localStorage.getItem("token");
+  const handleDeleteConfirmed = async (Id, total_amount) => {
+    setShowConfirmationModal(false); // Hide the confirmation modal
+    try {
+      const token = localStorage.getItem("token");
 
-        await axios.delete(
-          `http://localhost:3006/orders/deleteMyOrders/${Id}?total_amount=${total_amount}`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+      await axios.delete(
+        `http://localhost:3006/orders/deleteMyOrders/${Id}?total_amount=${total_amount}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
-        // Filter out the deleted order from the local state
-        setUsersOrders((prevOrders) =>
-          prevOrders.filter(
-            (order) =>
-              order.users_Id !== Id || order.total_amount !== total_amount
-          )
-        );
-      } catch (error) {
-        console.error(error);
-      }
+      // Filter out the deleted order from the local state
+      setUsersOrders((prevOrders) =>
+        prevOrders.filter(
+          (order) =>
+            order.users_Id !== Id || order.total_amount !== total_amount
+        )
+      );
+      toast.success("Order deleted successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.error("Failed to delete order. Please try again.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      console.error(error);
     }
-  }
+  };
 
   return (
     <div>
@@ -109,6 +122,35 @@ export default function Orders() {
             </table>
           </div>
         </div>
+        <Modal
+          show={showConfirmationModal}
+          onHide={() => setShowConfirmationModal(false)}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Order Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to delete this order?</Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowConfirmationModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() =>
+                handleDeleteConfirmed(
+                  orderToDelete.Id,
+                  orderToDelete.total_amount
+                )
+              }
+            >
+              Delete
+            </button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );

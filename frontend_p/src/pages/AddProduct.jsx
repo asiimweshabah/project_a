@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { toast } from "react-toastify";
 export default function AddProduct({ onClose }) {
   const [formData, setFormData] = useState({
     product: "",
@@ -50,7 +50,10 @@ export default function AddProduct({ onClose }) {
         }
       );
       onClose();
-      window.alert("Product added successfully!");
+      toast.success("Product added successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error(error);
     }

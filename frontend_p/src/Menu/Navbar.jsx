@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import SignUp from "../Components/SignUp";
 import { CiMenuKebab } from "react-icons/ci";
+import { toast } from "react-toastify";
+
 export const Navbar = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [isNavOpen, setNavOpen] = useState(false);
   const [userType, setUserType] = useState(localStorage.getItem("UserType"));
-
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     // Check for changes in UserType in localStorage and update the state accordingly
     setUserType(localStorage.getItem("UserType"));
@@ -20,13 +23,25 @@ export const Navbar = () => {
   const toggleNav = () => {
     setNavOpen(!isNavOpen);
   };
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    toggleModal();
+    navigate("/");
+    toast.success("Logged out successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+  };
 
   return (
     <div>
       <nav className="fixed-top navbar px-4 navbar-expand-lg navbar-light bg-light">
-        <Link to="/" className="Link">
-          <h5 id="logo">OdysseyBreakSystem</h5>
-        </Link>
+        <h5 id="logo">OdysseyBreakSystem</h5>
+
         <button className="navbar-toggler" type="button" onClick={toggleNav}>
           <CiMenuKebab />
         </button>
@@ -35,7 +50,7 @@ export const Navbar = () => {
             isNavOpen ? "show" : ""
           }`}
         >
-          <ul className="navbar-nav ml-auto">
+          <ul className="navbar-nav ml-auto d-flex align-items-center">
             <li className="nav-item">
               <Link
                 to="/products"
@@ -87,8 +102,32 @@ export const Navbar = () => {
                 </li>
               </>
             )}
+            <li className="nav-item">
+              <Link onClick={toggleModal} className="nav-link Link">
+                <button className="btn btn-danger">Logout</button>
+              </Link>
+            </li>
           </ul>
         </div>
+        <Modal show={showModal} onHide={toggleModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Logging out</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Are you sure you want to log out?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn bg_btn text-white" onClick={toggleModal}>
+              Cancel
+            </button>
+            <button
+              className="btn btn-danger btn-primary"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </Modal.Footer>
+        </Modal>
       </nav>
 
       {showSignUpModal && (
