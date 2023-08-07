@@ -42,14 +42,14 @@ const Setpassword = () => {
 
   return (
     <div>
-      <div className="form_container ">
+      <div className="form-container form_bg">
         <form id="form" onSubmit={handleSubmit} className=" w-50">
-          <div className="my-4">
+          <div>
             <label htmlFor="password">Enter Password:</label>
             <input
               required
               placeholder="Password"
-              className="form-control w-50"
+              className="form-control w-100"
               type="password"
               id="password"
               value={password}
@@ -61,7 +61,7 @@ const Setpassword = () => {
             <input
               required
               placeholder="Confirm Password"
-              className="form-control w-50"
+              className="form-control w-100"
               type="password"
               id="confirmPassword"
               value={confirmPassword}
@@ -69,7 +69,7 @@ const Setpassword = () => {
             />
           </div>
           <input
-            className="submit btn w-50 btn-danger mt-4 text-center mb-3"
+            className="submit btn w-100 btn-danger mt-4 text-center mb-3"
             type="submit"
             value="Set password"
           />

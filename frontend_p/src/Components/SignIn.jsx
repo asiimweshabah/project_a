@@ -80,7 +80,7 @@ export default function LogIn() {
 
   return (
     <div className="form-container form_bg">
-      <form id="form" method="POST" action="/users/login" className="w-50 ">
+      <form id="form" method="POST" action="/users/login" className="w-50">
         <div>
           <label htmlFor="email">
             Email
