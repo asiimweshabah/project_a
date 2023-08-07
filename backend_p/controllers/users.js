@@ -58,7 +58,7 @@ async function sendOrderPlacementAlert(userId) {
         <body>
           <h1>Make your breakfast order</h1>
           <p>You have an order pending. Please place the order before it expires.</p>
-          <a href="https://odysseybreaksytem.netlify.app">
+          <a href="https://odysseybreaksytem.netlify.app/products">
           <button style="background-color: #5f2781; border-radius: 10px; border: #5f2781; color: white; padding: 10px 20px; cursor: pointer;">Make Order</button>
         </a>
         </body>
