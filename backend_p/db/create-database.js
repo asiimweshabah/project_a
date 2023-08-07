@@ -1,4 +1,5 @@
 const executeQuery = require("./execute-query");
+const bcrypt = require("bcrypt");
 
 const createDatabase = async (dbName) => {
   try {
@@ -71,9 +72,30 @@ const createOrdersTable = async () => {
   }
 };
 
+const createAdmin = async () => {
+  try {
+    const sqlFind = "SELECT COUNT(Email) as COUNT from users WHERE Email = ?";
+    const countResults = await executeQuery(sqlFind, [process.env.admin_Email]);
+    if (!countResults?.[0]?.COUNT) {
+      const sql = `INSERT INTO users (Username,Email,PasswordHash,UserType,Company,status) values( ?, ?, ?, ?, ?, ?)`;
+      await executeQuery(sql, [
+        process.env.admin_Username,
+        process.env.admin_Email,
+        await bcrypt.hash(process.env.admin_PasswordHash, 6),
+        "Super Admin",
+        "Odysseytech",
+        process.env.admin_status,
+      ]);
+    }
+  } catch (error) {
+    console.error("Error creating combined table:", error);
+  }
+};
+
 module.exports = {
   createDatabase,
   createUsersTable,
   createProductsTable,
   createOrdersTable,
+  createAdmin,
 };

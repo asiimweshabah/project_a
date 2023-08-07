@@ -8,8 +8,8 @@ require("crypto").randomBytes(64).toString("hex"); //It generates a specified nu
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "shaban.asiimwe.upti@gmail.com",
-    pass: "zordpsgqqgbsyaka",
+    user: "shabanasiimwe639@gmail.com",
+    pass: "lxvztwngflemqfjd",
   },
   tls: {
     rejectUnauthorized: false,
@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 
 async function sendVerificationMessage(email) {
   try {
+    console.log("Send Email called");
     const mailOptions = {
       from: "Odysseytechnologies",
       to: email,

@@ -16,7 +16,7 @@ function Admin() {
 
   useEffect(() => {
     fetchUsers();
-  });
+  }, []);
 
   useEffect(() => {
     // Retrieve user activation status from local storage
